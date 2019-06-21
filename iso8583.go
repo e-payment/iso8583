@@ -210,6 +210,7 @@ func extractFieldFromElements(fieldID, str string) (result Field, rest string, e
 		return
 	}
 
+	result.ID = fieldID
 	//fmt.Printf("Index: %d, Description: %v, Data: %s\n", field, fieldDescription, str)
 	if fieldDescription.LenType == "fixed" {
 		result.Value = str[:fieldLength]
