@@ -28,7 +28,7 @@ func fromBCD(m []byte) (str string, err error) {
 }
 
 // ToString packs the mti, bitmap and elements into a string
-func (iso *IsoStruct) ToString() (string, error) {
+func (iso *Message) ToString() (string, error) {
 	var str string
 	// get done with the mti and the bitmap
 	bitmapString := hex.EncodeToString(iso.Bitmap())
@@ -50,7 +50,7 @@ func (iso *IsoStruct) ToString() (string, error) {
 
 // AddMTI adds the provided iso8583 MTI into the current struct
 // also updates the bitmap in the process
-func (iso *IsoStruct) AddMTI(data string) error {
+func (iso *Message) AddMTI(data string) error {
 	if err := ValidateMti(data); err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func (iso *IsoStruct) AddMTI(data string) error {
 
 // AddField adds the provided iso8583 field into the current struct
 // also updates the bitmap in the process
-func (iso *IsoStruct) AddField(field int, data string) error {
+func (iso *Message) AddField(field int, data string) error {
 	if field < 2 || field > BitMapLen(iso.bitmap) {
 		return fmt.Errorf("expected field to be between %d and %d found %d instead", 2, len(iso.bitmap), field)
 	}
@@ -81,7 +81,7 @@ func (iso *IsoStruct) AddField(field int, data string) error {
 }
 
 // Parse parses an iso8583 string
-func Parse(i string) (iso IsoStruct, err error) {
+func Parse(i string) (iso Message, err error) {
 	spec, mti, rest, err := extractMTI(i)
 	if err != nil {
 		return
@@ -106,11 +106,11 @@ func Parse(i string) (iso IsoStruct, err error) {
 
 	//fmt.Printf("BitMap: %08b, Elements: %v, Unpacked: %v\n", bitMap, elementString, elements)
 
-	iso = IsoStruct{spec: spec, mti: mti, bitmap: bitMap, data: data}
+	iso = Message{spec: spec, mti: mti, bitmap: bitMap, data: data}
 	return iso, nil
 }
 
-func (iso *IsoStruct) packElements() (string, error) {
+func (iso *Message) packElements() (string, error) {
 	var str string
 	bitmapLength := BitMapLen(iso.bitmap)
 	elementsMap := iso.data
@@ -303,7 +303,7 @@ func unpackElements(bitMap []byte, elements string, spec Spec) (d map[int]Field,
 	return d, nil
 }
 
-func NewMessage(specName string) (iso IsoStruct, err error) {
+func NewMessage(specName string) (iso Message, err error) {
 	spec, ok := specs[specName]
 	if !ok {
 		err = errors.New("Invalid spec")
@@ -317,6 +317,6 @@ func NewMessage(specName string) (iso IsoStruct, err error) {
 	bitMap = make([]byte, 8)
 
 	elements := make(map[int]Field)
-	iso = IsoStruct{spec: spec, mti: mti, bitmap: bitMap, data: elements}
+	iso = Message{spec: spec, mti: mti, bitmap: bitMap, data: elements}
 	return
 }

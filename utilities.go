@@ -29,17 +29,17 @@ func SetConfig(specFiles []string) (err error) {
 	return
 }
 
-func (iso IsoStruct) Spec() Spec {
+func (iso Message) Spec() Spec {
 	return iso.spec
 }
-func (iso IsoStruct) Mti() string {
+func (iso Message) Mti() string {
 	return iso.mti
 }
-func (iso IsoStruct) Bitmap() []byte {
+func (iso Message) Bitmap() []byte {
 	return iso.bitmap
 }
 
-func (iso IsoStruct) Data() map[int]Field {
+func (iso Message) Data() map[int]Field {
 	return iso.data
 }
 

@@ -19,7 +19,7 @@ var (
 
 type (
 	// IsoStruct is an iso8583 container
-	IsoStruct struct {
+	Message struct {
 		spec   Spec
 		mti    string
 		bitmap []byte
