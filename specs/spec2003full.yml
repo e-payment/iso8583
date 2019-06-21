@@ -1,0 +1,1352 @@
+Version: "2003"
+Fields:
+  0:
+    Label: Message Type Indicator
+    MaxLen:  4
+    ContentType: "n"
+    LenType: fixed
+  1:
+    ContentType: bmps
+    Label: Bitmap
+    LenType: bitmap
+    MaxLen:  16
+  2:
+    LenType: llvar
+    ContentType: "n"
+    MaxLen:  19
+    Label: Primary Account Number
+  3:
+    ContentType: "n"
+    LenType: fixed
+    MaxLen:  6
+    Label: Processing Code
+    Subfields:
+      0:
+        Label: Transaction type code
+        ContentType: an
+        LenType: fixed
+        MaxLen:  2
+      1: 
+        Label: Account type code 1
+        ContentType: an
+        LenType: fixed
+        MaxLen:  2
+      2:
+        Label: Account type code 2
+        ContentType: an
+        LenType: fixed
+        MaxLen:  2
+  4:
+    Label: "Amount transaction"
+    ContentType: "n"
+    LenType: fixed
+    MaxLen:  16
+    Subfields:
+      0:
+        Label: Currency code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      1:
+        Label: Currency minor unit
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      2:
+        Label: Value amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  12
+  5:
+    ContentType: "n"
+    MaxLen:  16
+    LenType: fixed
+    Label: "Amount reconciliation"
+    Subfields:
+      0:
+        Label: Currency code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      1:
+        Label: Currency minor unit
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      2:
+        Label: Value amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  12
+    
+  6:
+    MaxLen:  16
+    LenType: fixed
+    Label: "Amount, Cardholder Billing"
+    ContentType: "n"
+    Subfields:
+      0:
+        Label: Currency code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      1:
+        Label: Currency minor unit
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      2:
+        Label: Value amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  12
+  7:
+    ContentType: "n"
+    Label: "Date and Time Transmission"
+    LenType: fixed
+    Format: MMDDhhmmss
+    MaxLen:  10
+  8:
+    ContentType: "n"
+    LenType: fixed
+    MaxLen:  12
+    Label: "Amount, Cardholder Billing Fee"
+    Subfields:
+      0:
+        Label: Currency code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      1: 
+        Label: Currency minor unit
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      2:
+        Label: Value amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  8
+  9:
+    MaxLen:  8
+    ContentType: "n"
+    Label: "Conversion Rate, Reconciliation"
+    LenType: fixed
+  10:
+    Label: "Conversion Rate, Cardholder Billing"
+    MaxLen:  8
+    ContentType: "n"
+    LenType: fixed
+  11:
+    ContentType: "n"
+    LenType: fixed
+    MaxLen:  12
+    Label: Systems Trace Audit Number
+  12:
+    ContentType: "n"
+    MaxLen:  14
+    LenType: fixed
+    Format: CCYYMMDDhhmmss
+    Label: "Date and Time, Local Txn"
+    Subfields:
+      0: 
+        Label: Currency code
+        ContentType: n
+        LenType: fixed
+        Format: CCYYMMDD
+        MaxLen:  8
+      1:
+        Label: Currency minor unit
+        ContentType: n
+        LenType: fixed
+        Format: hhmmss
+        MaxLen:  6
+  13:
+    ContentType: "n"
+    LenType: fixed
+    MaxLen:  6
+    Label: "Date, Effective"
+  14:
+    Label: "Date, Expiration"
+    ContentType: "n"
+    MaxLen:  4
+    LenType: fixed
+  15:
+    Label: "Date, Settlement"
+    MaxLen:  8
+    ContentType: "n"
+    LenType: fixed
+  16:
+    MaxLen:  4
+    ContentType: "n"
+    LenType: fixed
+    Label: "Date, Conversion"
+  17:
+    LenType: fixed
+    MaxLen:  4
+    ContentType: "n"
+    Label: "Date, Capture"
+  18:
+    Label: Message error indicator
+    LenType: lllvar
+    ContentType: ansb
+    MaxLen:  140
+    Subfields:
+      0:
+        Label: Error severity code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      1:
+        Label: Message error code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  4
+      2:
+        Label: Data element in error
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      3:
+        Label: Data sub-element in error
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      4:
+        Label: Dataset identifier in error
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      5:
+        Label: Dataset bit or tag in error
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+  19:
+    ContentType: "n"
+    LenType: fixed
+    MaxLen:  3
+    Label: "Country code acquiring institution"
+  20:
+    Label: "Country code primary account number (PAN)"
+    ContentType: "n"
+    MaxLen:  3
+    LenType: fixed
+  21:
+    ContentType: ans
+    LenType: fixed
+    MaxLen:  22
+    Label: "Transaction life cycle identification data"
+    Subfields:
+      0:
+        Label: Life cycle support indicator
+        ContentType: ans
+        LenType: fixed
+        MaxLen:  1
+      1:
+        Label: Life cycle trace identifier
+        ContentType: ans
+        LenType: fixed
+        MaxLen:  15
+      2:
+        Label: Life cycle transaction sequence number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      3:
+        Label: Life cycle authentication token
+        ContentType: n
+        LenType: fixed
+        MaxLen:  4
+  22:
+    LenType: fixed
+    ContentType: b
+    Label: POS data code
+    MaxLen:  16
+  23:
+    MaxLen:  3
+    LenType: fixed
+    ContentType: "n"
+    Label: Card sequence number
+  24:
+    LenType: fixed
+    ContentType: "n"
+    Label: Function Code
+    MaxLen:  3
+  25:
+    Label: Message Reason Code
+    ContentType: "n"
+    MaxLen:  4
+    LenType: fixed
+  26:
+    ContentType: "n"
+    MaxLen:  4
+    LenType: fixed
+    Label: Merchant category code
+  27:
+    MaxLen:  27
+    LenType: fixed
+    Label: POS capability
+    ContentType: anb
+    Subfields:
+      0:
+        Label: POS card reading capability
+        ContentType: b
+        LenType: fixed
+        MaxLen:  4
+      1:
+        Label: POS cardholder verification capability
+        ContentType: b
+        LenType: fixed
+        MaxLen:  4
+      2:
+        Label: Approval code length
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      3:
+        Label: Cardholder receipt data length
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      4:
+        Label: Card acceptor receipt data length
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      5:
+        Label: Cardholder display data length
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      6:
+        Label: Card acceptor display data length
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      7:
+        Label: ICC scripts data length
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      8:
+        Label: Magnetic stripe track 3 rewrite capability
+        ContentType: a
+        LenType: fixed
+        MaxLen:  1
+      9:
+        Label: Card capture capability
+        ContentType: a
+        LenType: fixed
+        MaxLen:  1
+      10:
+        Label: Pin input length capability
+        ContentType: b
+        LenType: fixed
+        MaxLen:  1
+  28:
+    Label: "Date, Reconciliation"
+    MaxLen:  8
+    LenType: fixed
+    ContentType: "n"
+  29:
+    ContentType: "n"
+    MaxLen:  3
+    LenType: fixed
+    Label: Reconciliation Indicator
+  30:
+    Label: "Amounts, Original"
+    MaxLen:  32
+    LenType: fixed
+    ContentType: "n"
+    Subfields:
+      0:
+        Label: Original amount transaction
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+        Subfields:
+          0:
+            Label: Currency code
+            ContentType: n
+            LenType: fixed
+            MaxLen:  3
+          1:
+            Label: Currency minor unit
+            ContentType: n
+            LenType: fixed
+            MaxLen:  1
+          2:
+            Label: Value amount
+            ContentType: n
+            LenType: fixed
+            MaxLen:  12
+      1:
+        Label: Original amount reconciliation
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+        Subfields:
+          0:
+            Label: Currency code
+            ContentType: n
+            LenType: fixed
+            MaxLen:  3
+          1:
+            Label: Currency minor unit
+            ContentType: n
+            LenType: fixed
+            MaxLen:  1
+          2:
+            Label: Value amount
+            ContentType: n
+            LenType: fixed
+            MaxLen:  12
+  31:
+    Label: Acquirer reference number
+    LenType: llvar
+    MaxLen:  23
+    ContentType: "n"
+    Subfields:
+      0:
+        Label: User format identifier
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      1:
+        Label: Acquirer number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  6
+      2:
+        Label: Julian processing date
+        ContentType: n
+        LenType: fixed
+        Format: YDDD
+        MaxLen:  4
+      3:
+        Label: Sequence number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  11
+      4:
+        Label: Luhn check digit
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+  32:
+    Label: "Acquiring institution identification code"
+    LenType: llvar
+    ContentType: "n"
+    MaxLen:  11
+  33:
+    Label: Forwarding institution identification code
+    LenType: llvar
+    MaxLen:  11
+    ContentType: "n"
+  34:
+    Label: "Electronic commerce data"
+    LenType: llllvar
+    ContentType: b
+    MaxLen:  9999
+    Subfields:
+      70:
+        Label: Account based digital signature
+        ContentType: b
+        LenType: llvar
+        MaxLen:  90
+      71:
+        Label: Authentication code
+        ContentType: ansb
+        LenType: fixed
+        MaxLen:  50
+        Format: "Tag 80" #Depending on the tag, this field can mean different things. See Data Element E34
+  35:
+    ContentType: z
+    Label: Track 2 Data
+    MaxLen:  37
+    LenType: llvar
+  36:
+    LenType: lllvar
+    ContentType: z
+    Label: Track 3 Data
+    MaxLen:  104
+  37:
+    Label: Retrieval Reference Number
+    ContentType: anp
+    MaxLen:  12
+    LenType: fixed
+  38:
+    LenType: fixed
+    Label: Approval Code
+    ContentType: anp
+    MaxLen:  6
+  39:
+    Label: Action Code
+    MaxLen:  4
+    ContentType: "n"
+    LenType: fixed
+  40:
+    LenType: fixed
+    MaxLen:  3
+    Label: Service Code
+    ContentType: "n"
+  41:
+    Label: Card Acceptor Terminal Id
+    MaxLen:  16
+    LenType: fixed
+    ContentType: ans
+  42:
+    ContentType: ans
+    LenType: fixed
+    Label: Card Acceptor Id Code
+    MaxLen:  35
+  43:
+    Label: Card Acceptor Name/Location
+    LenType: llllvar
+    ContentType: ansb
+    MaxLen:  9999
+    Subfields:
+      70:
+        Label: Card acceptor additional address information
+        ContentType: an
+        LenType: llvar
+        Format: "Tag 81"
+        MaxLen:  256
+  44:
+    ContentType: ansb
+    MaxLen:  9999
+    Label: Additional response data
+    LenType: llllvar
+    Subfields:
+      70:
+        Label: Additional response data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  99
+  45:
+    Label: Track 1 Data
+    LenType: llvar
+    MaxLen:  76
+    ContentType: ans
+  46:
+    LenType: lllvar
+    MaxLen:  216
+    ContentType: ans
+    Label: "Amounts, Fees"
+    Subfields:
+      0:
+        Label: Fee type code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      1:
+        Label: Amount fee
+        ContentType: xn
+        LenType: fixed
+        MaxLen:  13
+        Subfields:
+          0:
+            Label: Currency code
+            ContentType: n
+            LenType: fixed
+            MaxLen:  3
+          1:
+            Label: Currency minor unit
+            ContentType: n
+            LenType: fixed
+            MaxLen:  1
+          2:
+            Label: Value amount
+            ContentType: n
+            LenType: fixed
+            MaxLen:  8
+      2:
+        Label: Conversion rate fee
+        ContentType: n
+        LenType: fixed
+        MaxLen:  8
+      3:
+        Label: Amount reconciliation fee
+        ContentType: xn
+        LenType: fixed
+        MaxLen:  13
+        Subfields:
+          0:
+            Label: Currency code
+            ContentType: n
+            LenType: fixed
+            MaxLen:  3
+          1:
+            Label: Currency minor unit
+            ContentType: n
+            LenType: fixed
+            MaxLen:  1
+          2:
+            Label: Value amount
+            ContentType: n
+            LenType: fixed
+            MaxLen:  8
+  47:
+    Label: "Additional Data National"
+    ContentType: ans
+    LenType: lllvar
+    MaxLen:  999
+  48:
+    MaxLen:  999
+    LenType: lllvar
+    Label: "Additional Data Private"
+    ContentType: ans
+  49:
+    ContentType: ans
+    MaxLen:  9999
+    LenType: fixed
+    Label: "Verification data"
+    Subfields:
+      70:
+        Label: Verification data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  40 #is listed as 30 in spec, but billing address which should fit here, is ans 40
+      71:
+        Label: Address verification result code
+        ContentType: an
+        LenType: fixed
+        MaxLen:  1
+  50:
+    MaxLen:  9999
+    LenType: fixed
+    ContentType: ansb
+    Label: "Reserved for ISO"
+  51:
+    LenType: fixed
+    Label: "Reserved for ISO"
+    ContentType: ansb
+    MaxLen:  9999
+  52:
+    ContentType: b
+    MaxLen:  8
+    Label: Personal Id Number (PIN) Data
+    LenType: fixed
+  53:
+    Label: Security Related Control Information
+    LenType: llvar
+    MaxLen:  48
+    ContentType: b
+  54:
+    ContentType: ans
+    MaxLen:  126
+    LenType: lllvar
+    Label: "Amounts, Additional"
+    Subfields:
+      0:
+        Label: Account type additional amounts
+        ContentType: an
+        LenType: fixed
+        MaxLen:  2
+      1:
+        Label: Amount type additional amounts
+        ContentType: an
+        LenType: fixed
+        MaxLen:  2
+      2:
+        Label: Amount additional amounts
+        ContentType: xn
+        LenType: fixed
+        MaxLen:  17
+        Subfields:
+          0:
+            Label: Currency code
+            ContentType: n
+            LenType: fixed
+            MaxLen:  3
+          1:
+            Label: Currency minor unit
+            ContentType: n
+            LenType: fixed
+            MaxLen:  1
+          2:
+            Label: Value amount
+            ContentType: n
+            LenType: fixed
+            MaxLen:  12
+  55:
+    LenType: llllvar
+    ContentType: b
+    MaxLen:  9999
+    Label: IC Card System Related Data
+  56:
+    LenType: llvar
+    ContentType: "n"
+    Label: Original Data Elements
+    MaxLen:  41
+    Subfields:
+      0:
+        Label: Original message type identifier
+        ContentType: n
+        LenType: fixed
+        MaxLen:  4
+      1:
+        Label: Original system trace audit number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  12
+      2:
+        Label: Original date and time local transaction
+        ContentType: n
+        LenType: fixed
+        Format: CCYYMMDDhhmmss
+        MaxLen:  14
+      3:
+        Label: Original acquiring institution identification code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  11
+  57:
+    LenType: lllvar
+    MaxLen:  3
+    ContentType: "n"
+    Label: Authorization Life Cycle Code
+  58:
+    Label: Authorizing agent institution identification code
+    MaxLen:  11
+    LenType: llvar
+    ContentType: "n"
+  59:
+    ContentType: ans
+    Label: Transport Data
+    LenType: lllvar
+    MaxLen:  999
+  60:
+    ContentType: ans
+    LenType: lllvar
+    MaxLen:  999
+    Label: Reserved for National use
+  61:
+    MaxLen:  999
+    Label: Reserved for National use
+    ContentType: ans
+    LenType: lllvar
+  62:
+    LenType: lllvar
+    Label: Reserved for Private use
+    ContentType: ans
+    MaxLen:  999
+  63:
+    MaxLen:  999
+    Label: Reserved for Private use
+    LenType: lllvar
+    ContentType: ans
+  64:
+    ContentType: b
+    MaxLen:  4
+    Label: Message Authentication Code Field
+    LenType: fixed
+  65:
+    Label: Reserved for ISO use
+    ContentType: b
+    MaxLen:  8
+    LenType: fixed
+  66:
+    MaxLen:  216
+    LenType: lllvar
+    Label: "Amounts original fees"
+    ContentType: ans
+    Subfields:
+      0:
+        Label: Original fee type code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      1:
+        Label: Original amount fee
+        ContentType: xn
+        LenType: fixed
+        MaxLen:  13
+        Subfields:
+          0:
+            Label: Currency code
+            ContentType: n
+            LenType: fixed
+            MaxLen:  3
+          1:
+            Label: Currency minor unit
+            ContentType: n
+            LenType: fixed
+            MaxLen:  1
+          2:
+            Label: Value amount
+            ContentType: n
+            LenType: fixed
+            MaxLen:  8
+        2:
+          Label: Original conversion rate fee
+          ContentType: n
+          LenType: fixed
+          MaxLen:  8
+        3:
+          Label: Original amount reconciliation fee
+          ContentType: xn
+          LenType: fixed
+          MaxLen:  13
+          Subfields:
+            0:
+              Label: Currency code
+              ContentType: n
+              LenType: fixed
+              MaxLen:  3
+            1:
+              Label: Currency minor unit
+              ContentType: n
+              LenType: fixed
+              MaxLen:  1
+            2:
+              Label: Value amount
+              ContentType: n
+              LenType: fixed
+              MaxLen:  8
+  67:
+    LenType: fixed
+    Label: Extended Payment Data
+    MaxLen:  2
+    ContentType: "n"
+  68:
+    LenType: fixed
+    MaxLen:  9
+    Label: "Batch/file transfer message control"
+    ContentType: an
+    Subfields:
+      0:
+        Label: Batch/file transfer acknowledgement code
+        ContentType: an
+        LenType: fixed
+        MaxLen:  1
+      1:
+        Label: Batch/file transfer message sequence number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  8
+  69:
+    LenType: fixed
+    ContentType: ans
+    Label: "Batch/file transfer control data"
+    MaxLen:  40
+    Subfields:
+      0:
+        Label: Batch/file transfer message count
+        ContentType: n
+        LenType: fixed
+        MaxLen:  8
+      1:
+        Label: Batch/file transfer file identification
+        ContentType: ans
+        LenType: fixed
+        MaxLen:  32
+  70:
+    ContentType: "n"
+    Label: File transfer description data
+    MaxLen:  18
+    LenType: fixed
+    Subfields:
+      0:
+        Label: File transfer file size
+        ContentType: n
+        LenType: fixed
+        MaxLen:  6
+      1:
+        Label: File transfer elementary data record count
+        ContentType: n
+        LenType: fixed
+        MaxLen:  6
+      2:
+        Label: File transfer remaining elementary data record count
+        ContentType: n
+        LenType: fixed
+        MaxLen:  6
+  71:
+    Label: Reserved for ISO use
+    LenType: llllvar
+    ContentType: ansb
+    MaxLen:  9999
+  72:
+    MaxLen:  9999
+    ContentType: ansb
+    LenType: llllvar
+    Label: Data record
+  73:
+    LenType: fixed
+    Label: "Date, Action"
+    ContentType: "n"
+    Format: CCYYMMDD
+    MaxLen:  8
+  74:
+    ContentType: "n"
+    LenType: fixed
+    Label: "Reconciliation data primary"
+    MaxLen:  156
+    Subfields:
+      0:
+        Label: Credits amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+      1:
+        Label: Credits number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      2:
+        Label: Credits chargeback amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+      3:
+        Label: Credits chargeback number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      4:
+        Label: Credits reversal amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+      5:
+        Label: Credits reversal number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      6:
+        Label: Debits amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+      7:
+        Label: Debits number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      8:
+        Label: Debits chargeback amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+      9:
+        Label: Debits chargeback number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      10:
+        Label: Debits reversal amount
+        ContentType: n
+        LenType: fixed
+        MaxLen:  16
+      11:
+        Label: Debits reversal number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+  75:
+    LenType: fixed
+    ContentType: "n"
+    Label: "Reconciliation data secondary"
+    MaxLen:  90
+    Subfields:
+      0:
+        Label: Authorizations number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      1:
+        Label: Authorizations reversal number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      2:
+        Label: Inquiries reversal number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      3:
+        Label: Inquiries number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      4:
+        Label: Fee collections number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      5:
+        Label: Payments number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      6:
+        Label: Payments reversal number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      7:
+        Label: Transfer number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+      8:
+        Label: Transfer reversal number
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+  76:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  77:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  78:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  79:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  80:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  81:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  82:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  83:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  84:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  85:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  86:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  87:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  88:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  89:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  90:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  91:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  92:
+    Label: "Reserved for ISO use"
+    ContentType: "n"
+    LenType: llllvar
+    MaxLen:  9999
+  93:
+    Label: Transaction destination institution identification code
+    LenType: llvar
+    MaxLen:  11
+    ContentType: "n"
+  94:
+    ContentType: "n"
+    MaxLen:  11
+    Label: Transaction originator institution identification code
+    LenType: llvar
+  95:
+    MaxLen:  99
+    Label: Card Issuer Reference Data
+    LenType: llvar
+    ContentType: "n"
+  96:
+    ContentType: b
+    LenType: lllvar
+    MaxLen:  999
+    Label: Key Management Data
+  97:
+    ContentType: xn
+    Label: "Amount, Net Reconciliation"
+    MaxLen:  21
+    LenType: fixed
+    Subfields:
+      0:
+        Label: Currency code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  3
+      1:
+        Label: Currency minor unit
+        ContentType: n
+        LenType: fixed
+        MaxLen:  1
+      2:
+        Label: Value amount
+        ContentType: xn
+        LenType: fixed
+        MaxLen:  17
+  98:
+    MaxLen:  25
+    LenType: fixed
+    ContentType: ans
+    Label: Payee
+  99:
+    MaxLen:  11
+    LenType: llvar
+    Label: Settlement institution identification code
+    ContentType: an
+  100:
+    Label: Receiving institution identification code
+    MaxLen:  11
+    LenType: llvar
+    ContentType: "n"
+  101:
+    ContentType: ans
+    Label: File Name
+    LenType: llvar
+    MaxLen:  99
+  102:
+    LenType: llvar
+    Label: Account identification 1
+    ContentType: ans
+    MaxLen:  28
+  103:
+    MaxLen:  28
+    ContentType: ans
+    LenType: llvar
+    Label: Account identification 2
+  104:
+    Label: Transaction specific data
+    ContentType: ans
+    MaxLen:  9999
+    LenType: llllvar
+    Subfields:
+      70:
+        Label: Free-form description data
+        ContentType: ans
+        LenType: lllvar
+        MaxLen:  999
+      71:
+        Label: Invoice Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  22
+      72:
+        Label: Line Item Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  40
+      73:
+        Label: Airline Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  29
+      74:
+        Label: Trip Leg Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  20
+      75:
+        Label: Automotive Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  29
+      76:
+        Label: Lodging Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  16
+      77:
+        Label: Fleet Data
+        ContentType: ans
+        LenType: llvar
+        MaxLen:  17
+  105:
+    LenType: llllvar
+    MaxLen:  9999
+    Label: "Reserved for ISO use"
+    ContentType: ansb
+  106:
+    LenType: llllvar
+    MaxLen:  9999
+    Label: "Reserved for ISO use"
+    ContentType: ansb
+  107:
+    LenType: llllvar
+    MaxLen:  9999
+    Label: "Reserved for ISO use"
+    ContentType: ansb
+  108:
+    LenType: llllvar
+    MaxLen:  9999
+    Label: "Reserved for ISO use"
+    ContentType: ansb
+  109:
+    LenType: lllvar
+    MaxLen:  144
+    ContentType: ans
+    Label: "Reconciliation fee amounts credit"
+    Subfields:
+      0:
+        Label: Fee type code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      1:
+        Label: Amount fee total
+        ContentType: n
+        LenType: fixed
+        MaxLen:  12
+      2:
+        Label: Number fee total
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+  110:
+    LenType: lllvar
+    MaxLen:  144
+    ContentType: ans
+    Label: "Reconciliation fee amounts debit"
+    Subfields:
+      0:
+        Label: Fee type code
+        ContentType: n
+        LenType: fixed
+        MaxLen:  2
+      1:
+        Label: Amount fee total
+        ContentType: n
+        LenType: fixed
+        MaxLen:  12
+      2:
+        Label: Number fee total
+        ContentType: n
+        LenType: fixed
+        MaxLen:  10
+  111:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  112:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  113:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  114:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  115:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  116:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  117:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  118:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  119:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  120:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  121:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  122:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for national use
+  123:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  124:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  125:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  126:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  127:
+    LenType: llllvar
+    MaxLen:  9999
+    ContentType: ansb
+    Label: Reserved for private use
+  128:
+    ContentType: b
+    LenType: fixed
+    MaxLen:  4
+    Label: Message Authentication Code Field

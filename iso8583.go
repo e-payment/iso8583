@@ -2,14 +2,13 @@ package iso8583
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"strconv"
-)
+	"strings"
 
-// MtiType is the message type identifier type
-type MtiType struct {
-	mti string
-}
+	"github.com/albenik/bcd"
+)
 
 // String returns the mti as a string
 func (m *MtiType) String() string {
@@ -26,22 +25,36 @@ func (e *ElementsType) GetElements() map[int64]string {
 	return e.elements
 }
 
-// IsoStruct is an iso8583 container
-type IsoStruct struct {
-	Spec     Spec
-	Mti      MtiType
-	Bitmap   []int64
-	Elements ElementsType
+func fromBCD(m []byte) (str string, err error) {
+	count := len(m)
+	if count != 8 && count != 16 {
+		return "", errors.New("Invalid bitmap length")
+	}
+
+	//fmt.Println(GetBit(m, 0), m[0])
+	if !GetBit(m, 0) && count == 16 {
+		count /= 2
+	}
+
+	for index := 0; index < count; index++ {
+		str += fmt.Sprint(bcd.ToUint8(m[index]))
+	}
+	return
 }
 
 // ToString packs the mti, bitmap and elements into a string
 func (iso *IsoStruct) ToString() (string, error) {
 	var str string
 	// get done with the mti and the bitmap
-	bitmapString, err := BitMapArrayToHex(iso.Bitmap)
-	if err != nil {
-		return str, err
-	}
+	bitmapString := hex.EncodeToString(iso.Bitmap)
+
+	// bcdInts, err := fromBCD(iso.Bitmap)
+	// if err != nil {
+	// 	return "", err
+	// }
+
+	// fmt.Printf("Bitmap: %v\n", bcdInts)
+
 	elementsStr, err := iso.packElements()
 	if err != nil {
 		return str, err
@@ -59,56 +72,70 @@ func (iso *IsoStruct) AddMTI(data string) error {
 		return err
 	}
 	iso.Mti = mti
+	//fmt.Printf("MTI: %s\n", iso.Mti)
 	return nil
 }
 
 // AddField adds the provided iso8583 field into the current struct
 // also updates the bitmap in the process
 func (iso *IsoStruct) AddField(field int64, data string) error {
-	if field < 2 || field > int64(len(iso.Bitmap)) {
+	if field < 2 || field > int64(BitMapLen(iso.Bitmap)) {
 		return fmt.Errorf("expected field to be between %d and %d found %d instead", 2, len(iso.Bitmap), field)
 	}
-	iso.Bitmap[field-1] = 1
+
+	if field >= 65 {
+		SetBit(iso.Bitmap, 0)
+		if len(iso.Bitmap) == 8 {
+			iso.Bitmap = append(iso.Bitmap, make([]byte, 8)...) //increase bitmap
+		}
+	}
+
+	SetBit(iso.Bitmap, int(field-1))
 	iso.Elements.elements[field] = data
+	//fmt.Printf("Field %d: %s\n", field, iso.Elements.elements[field])
 	return nil
 }
 
 // Parse parses an iso8583 string
-func (iso *IsoStruct) Parse(i string) (IsoStruct, error) {
-	var q IsoStruct
-	spec := iso.Spec
-	mti, rest := extractMTI(i)
-	bitmap, elementString, err := extractBitmap(rest)
-
+func Parse(i string) (iso IsoStruct, err error) {
+	spec, mti, rest, err := extractMTI(i)
 	if err != nil {
-		return q, err
+		return
 	}
+
+	bitMap, elementString, err := extractBitmap(rest)
+	if err != nil {
+		return
+	}
+
+	//fmt.Printf("BitMap: %08b, Elements: %v", bitMap, elementString)
 
 	// validat the mti
-	_, err = MtiValidator(mti)
-	if err != nil {
-		return q, err
+	if _, err = MtiValidator(mti); err != nil {
+		return
 	}
 
-	elements, err := unpackElements(bitmap, elementString, spec)
+	elements, err := unpackElements(bitMap, elementString, spec)
 	if err != nil {
-		return q, err
+		return
 	}
 
-	q = IsoStruct{Spec: spec, Mti: mti, Bitmap: bitmap, Elements: elements}
-	return q, nil
+	//fmt.Printf("BitMap: %08b, Elements: %v, Unpacked: %v\n", bitMap, elementString, elements)
+
+	iso = IsoStruct{Spec: spec, Mti: mti, Bitmap: bitMap, Elements: elements}
+	return iso, nil
 }
 
 func (iso *IsoStruct) packElements() (string, error) {
 	var str string
-	bitmap := iso.Bitmap
+	bitmapLength := BitMapLen(iso.Bitmap)
 	elementsMap := iso.Elements.GetElements()
 	elementsSpec := iso.Spec
 
-	for index := 1; index < len(bitmap); index++ { // index 0 of bitmap isn't need here
-		if bitmap[index] == 1 { // if the field is present
+	for index := 1; index < bitmapLength; index++ { // index 0 of bitmap isn't need here
+		if GetBit(iso.Bitmap, index) { // if the field is present
 			field := int64(index + 1)
-			fieldDescription := elementsSpec.fields[int(field)]
+			fieldDescription := elementsSpec.fields[field]
 			if fieldDescription.LenType == "fixed" {
 				str = str + elementsMap[field]
 			} else {
@@ -126,109 +153,130 @@ func (iso *IsoStruct) packElements() (string, error) {
 }
 
 // extractMTI extracts the mti from an iso8583 string
-func extractMTI(str string) (MtiType, string) {
-	mti := str[0:4]
-	rest := str[4:len(str)]
+func extractMTI(str string) (spec Spec, mti MtiType, rest string, err error) {
+	mti.mti, rest = str[0:4], str[4:len(str)]
 
-	return MtiType{mti: mti}, rest
+	specName := ""
+	switch string(mti.mti[0]) {
+	case "0":
+		specName = "1987"
+	case "1":
+		specName = "1993"
+	case "2":
+		specName = "2003"
+	default:
+		return Spec{}, MtiType{}, "", fmt.Errorf("Invalid mti version %v", string(mti.mti[0]))
+	}
+
+	spec, ok := specs[specName]
+	if !ok {
+		return Spec{}, MtiType{}, "", fmt.Errorf("iso8583:%s is not supported", specName)
+	}
+
+	return
 }
 
-func extractBitmap(rest string) ([]int64, string, error) {
-	var bitmap []int64
-	var elementsString string
+func extractBitmap(rest string) (bytes []byte, elementsString string, err error) {
+	mapLen := 16
 
-	// remove first two characters
-	frontHex := rest[0:2]
-	//fmt.Println(frontHex)
-	inDec, err := hex.DecodeString(frontHex)
-	if err != nil {
-		return bitmap, elementsString, err
+	if len(rest) < mapLen {
+		err = errors.New("Invalid bitmap length")
+		return
+	}
+	tempMap := rest[:mapLen]
+
+	// only 64 bit primary bitmap
+	if bytes, err = hex.DecodeString(tempMap); err != nil {
+		err = fmt.Errorf("Error Decoding string: %v", err)
+		return
 	}
 
-	inBinary := fmt.Sprintf("%8b", inDec[0])
-	compare := "1"
-	var bitmapHexLength int
-
-	// if the first bit of the bitmap is 1,
-	// it means a secondary bitmap exist hence its a 128 bit bitmap (hex length 32)
-	if inBinary[0] == compare[0] { // don't why I did it like this
-		// secondary bitmap exists
-		bitmapHexLength = 32
-	} else {
-		// only primary bitmap is there
-		// 64 bit bitmap (hex length 16)
-		bitmapHexLength = 16
+	if GetBit(bytes, 0) {
+		mapLen = 32
+		// secondary bitmap exists, so total 128 bits
+		if bytes, err = hex.DecodeString(tempMap[:mapLen]); err != nil {
+			err = fmt.Errorf("Error Decoding string: %v", err)
+			return
+		}
 	}
 
-	bitmapHexString := rest[0:bitmapHexLength]
-	elementsString = rest[bitmapHexLength:len(rest)]
+	elementsString = rest[mapLen:]
 
-	bitmap, err = HexToBitmapArray(bitmapHexString)
-	if err != nil {
-		return bitmap, elementsString, err
-	}
-	return bitmap, elementsString, nil
+	return bytes, elementsString, nil
 }
 
 func getVariableLengthFromString(str string) (int64, error) {
-	var num int64
-	if str == "llvar" {
-		return 2, nil
+	if str != "llvar" && str != "lllvar" && str != "llllvar" {
+		return 0, fmt.Errorf("%s is an invalid LenType", str)
 	}
-	if str == "lllvar" {
-		return 3, nil
-	}
-	if str == "llllvar" {
-		return 4, nil
-	}
-
-	return num, fmt.Errorf("%s is an invalid LenType", str)
+	return int64(strings.Count(str, "l")), nil
 }
 
-func extractFieldFromElements(spec Spec, field int, str string) (string, string, error) {
-	var extractedField, substr string
-	fieldDescription := spec.fields[int(field)]
-
+func extractFieldFromElements(spec Spec, field int64, str string) (extractedField, rest string, err error) {
+	fieldDescription := spec.fields[field]
+	length := int64(fieldDescription.MaxLen)
+	if fieldDescription.MaxLen > len(str) {
+		length = int64(len(str))
+		return str, "", nil
+	}
+	//fmt.Printf("Index: %d, Description: %v, Data: %s\n", field, fieldDescription, str)
 	if fieldDescription.LenType == "fixed" {
-		extractedField = str[0:fieldDescription.MaxLen]
-		substr = str[fieldDescription.MaxLen:len(str)]
+		extractedField = str[:length]
+		rest = strings.TrimPrefix(str, extractedField)
+		//fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, extractedField, str)
+
 	} else {
 		// varianle length fields have their lengths embedded into the string
-		length, err := getVariableLengthFromString(fieldDescription.LenType)
-		if err != nil {
-			return extractedField, substr, fmt.Errorf("spec error: field %d: %s", field, err.Error())
-		}
-		fieldLength := str[0:length]       // get the embedded length
-		tempSubstr := str[length:len(str)] // get the string with the length removed
-		fieldLengthInt, err := strconv.ParseInt(fieldLength, 10, 64)
-		if err != nil {
-			return extractedField, substr, err
+		digitCount, err2 := getVariableLengthFromString(fieldDescription.LenType)
+		if err2 != nil {
+			return extractedField, "", fmt.Errorf("spec error: field %d: %s", field, err2.Error())
 		}
 
-		extractedField = tempSubstr[0:fieldLengthInt]
-		substr = tempSubstr[fieldLengthInt:len(tempSubstr)]
+		tempLength, err2 := strconv.Atoi(str[0:digitCount])
+		if err != nil {
+			err = fmt.Errorf("spec error: field %d: %s", field, "invalid length digits")
+			return
+		}
+
+		extractedField = str[:int64(tempLength)]
+		rest = strings.TrimPrefix(str, extractedField)
+		//fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, extractedField, str)
 	}
 
-	return extractedField, substr, nil
+	return extractedField, rest, nil
 }
 
-func unpackElements(bitmap []int64, elements string, spec Spec) (ElementsType, error) {
-	var elem ElementsType
+func unpackElements(bitMap []byte, elements string, spec Spec) (elem ElementsType, err error) {
+	bitmapLength := BitMapLen(bitMap)
 	var m = make(map[int64]string)
 	currentString := elements
+
 	// The first (index 0) bit of the bitmap shows the presense(1)/absense(0) of the secondary
 	// we therefore start with the second bit (index 1) which is field (2)
-	for index := 1; index < len(bitmap); index++ {
-		bit := bitmap[index]
-		if bit == 1 { // field is present
-			field := index + 1 // adjust to account for the fact that arrays start at 0
-			extractedField, substr, err := extractFieldFromElements(spec, field, currentString)
-			if err == nil {
-				m[int64(field)] = extractedField
-				currentString = substr
-			} else {
-				return elem, err
-			}
+	//fmt.Printf("Bitmap: %b\n", bitMap)
+
+	for index := 1; index < bitmapLength; index++ {
+		//Index starts at 1 because index 0 is the second bitmap flag
+
+		field := int64(index + 1) // Index 1 represents field 2
+
+		if !GetBit(bitMap, index) {
+			continue //Field it not set, we can skip
+		}
+
+		extractedField, rest, err2 := extractFieldFromElements(spec, field, currentString)
+		if err = err2; err != nil {
+			return
+		}
+
+		currentString = rest
+		//fmt.Println(currentString)
+
+		m[field] = extractedField
+		//fmt.Printf("Bitmap index: %d, Field %d: %v\n", index, field, m[field])
+
+		if rest == "" {
+			break
 		}
 	}
 
@@ -236,26 +284,21 @@ func unpackElements(bitmap []int64, elements string, spec Spec) (ElementsType, e
 	return elem, nil
 }
 
-// NewISOStruct creates a new IsoStruct
-// based on the content of the specfile provided
-func NewISOStruct(filename string, secondaryBitmap bool) IsoStruct {
-	var iso IsoStruct
-	var bitmap []int64
+func NewMessage(specName string) (iso IsoStruct, err error) {
+	spec, ok := specs[specName]
+	if !ok {
+		err = errors.New("Invalid spec")
+		return
+	}
+
+	var bitMap []byte
 	mti := MtiType{mti: ""}
 
-	if secondaryBitmap == true {
-		bitmap = make([]int64, 128)
-		bitmap[0] = 1
-	} else {
-		bitmap = make([]int64, 64)
-	}
+	//We start with a single bitmap, and if we add any fields from position 65 onwards, we double the map
+	bitMap = make([]byte, 8)
 
 	emap := make(map[int64]string)
 	elements := ElementsType{elements: emap}
-	spec, err := SpecFromFile(filename)
-	if err != nil {
-		panic(err) // we panic because we don't want to do anything without a valid specfile
-	}
-	iso = IsoStruct{Spec: spec, Mti: mti, Bitmap: bitmap, Elements: elements}
-	return iso
+	iso = IsoStruct{Spec: spec, Mti: mti, Bitmap: bitMap, Elements: elements}
+	return
 }
