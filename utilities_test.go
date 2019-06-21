@@ -53,21 +53,15 @@ func Test_ReadFile(t *testing.T) {
 }
 
 func TestMtiValidator(t *testing.T) {
-	mti := MtiType{mti: "0200"}
-	check, _ := MtiValidator(mti)
-	if check != true {
+	if err := ValidateMti("0200"); err != nil {
 		t.Errorf("failed to verify a valid mti")
 	}
 
-	mti = MtiType{mti: "020"}
-	_, err := MtiValidator(mti)
-	if err == nil {
+	if err := ValidateMti("020"); err == nil {
 		t.Errorf("did not detect an invalid length mti")
 	}
 
-	mti = MtiType{mti: "a020"}
-	_, err = MtiValidator(mti)
-	if err == nil {
+	if err := ValidateMti("a0200"); err == nil {
 		t.Errorf("did not detect an invalid character in mti")
 	}
 }

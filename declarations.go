@@ -18,34 +18,36 @@ var (
 )
 
 type (
-	MtiType struct {
-		mti string
-	}
-
 	// IsoStruct is an iso8583 container
 	IsoStruct struct {
-		Spec     Spec
-		Mti      MtiType
-		Bitmap   []byte
-		Elements ElementsType
+		spec   Spec
+		mti    string
+		bitmap []byte
+		data   map[int]Field
+	}
+
+	Field struct {
+		ID        string
+		Value     string //the decoded value that can be used as is
+		Subfields map[int]Field
 	}
 
 	// FieldDescription contains fields that describes an iso8583 Field
 	FieldDescription struct {
-		ContentType string                     `yaml:"ContentType"`
-		MaxLen      int                        `yaml:"MaxLen"`
-		MinLen      int                        `yaml:"MinLen"`
-		LenType     string                     `yaml:"LenType"`
-		Label       string                     `yaml:"Label"`
-		Format      string                     `yaml:"Format"`
-		Subfields   map[int64]FieldDescription `yaml:"Subfields"`
+		ContentType string                   `yaml:"ContentType"`
+		MaxLen      int                      `yaml:"MaxLen"`
+		MinLen      int                      `yaml:"MinLen"`
+		LenType     string                   `yaml:"LenType"`
+		Label       string                   `yaml:"Label"`
+		Format      string                   `yaml:"Format"`
+		Subfields   map[int]FieldDescription `yaml:"Subfields"`
 	}
 
 	// Spec contains a strutured description of an iso8583 spec
 	// properly defined by a spec file
 	Spec struct {
 		version string
-		fields  map[int64]FieldDescription
+		fields  map[int]FieldDescription
 	}
 
 	// ValidationError happens when validation fails

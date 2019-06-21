@@ -2,36 +2,36 @@ Version: "1993"
 Fields:
   0:
     Label: Message Type Indicator
-    Length:  4
+    MaxLen:  4
     ContentType: "n"
     LenType: fixed
   1:
     ContentType: bmps
     Label: Bitmap
     LenType: bitmap
-    Length:  16
+    MaxLen:  16
   2:
     LenType: llvar
     ContentType: "n"
-    Length:  19
+    MaxLen:  19
     Label: Primary Account Number
   3:
     ContentType: "n"
     LenType: fixed
-    Length:  6
+    MaxLen:  6
     Label: Processing Code
   4:
     Label: "Amount, Txn"
     ContentType: "n"
     LenType: fixed
-    Length:  12
+    MaxLen:  12
   5:
     ContentType: "n"
-    Length:  12
+    MaxLen:  12
     LenType: fixed
     Label: "Amount, Reconciliation"
   6:
-    Length:  12
+    MaxLen:  12
     LenType: fixed
     Label: "Amount, Cardholder Billing"
     ContentType: "n"
@@ -39,84 +39,84 @@ Fields:
     ContentType: "n"
     Label: "Date and Time, Transmission"
     LenType: fixed
-    Length:  10
+    MaxLen:  10
   8:
     ContentType: "n"
     LenType: fixed
-    Length:  8
+    MaxLen:  8
     Label: "Amount, Cardholder Billing Fee"
   9:
-    Length:  8
+    MaxLen:  8
     ContentType: "n"
     Label: "Conversion Rate, Reconciliation"
     LenType: fixed
   10:
     Label: "Conversion Rate, Cardholder Billing"
-    Length:  8
+    MaxLen:  8
     ContentType: "n"
     LenType: fixed
   11:
     ContentType: "n"
     LenType: fixed
-    Length:  6
+    MaxLen:  6
     Label: Systems Trace Audit Number
   12:
     ContentType: "n"
-    Length:  6
+    MaxLen:  6
     LenType: fixed
     Label: "Date and Time, Local Txn"
   13:
     ContentType: "n"
     LenType: fixed
-    Length:  4
+    MaxLen:  4
     Label: "Date, Effective"
   14:
     Label: "Date, Expiration"
     ContentType: "n"
-    Length:  4
+    MaxLen:  4
     LenType: fixed
   15:
     Label: "Date, Settlement"
-    Length:  4
+    MaxLen:  4
     ContentType: "n"
     LenType: fixed
   16:
-    Length:  4
+    MaxLen:  4
     ContentType: "n"
     LenType: fixed
     Label: "Date, Conversion"
   17:
     LenType: fixed
-    Length:  4
+    MaxLen:  4
     ContentType: "n"
     Label: "Date, Capture"
   18:
     Label: Merchant Type
     LenType: fixed
     ContentType: "n"
-    Length:  4
+    MaxLen:  4
   19:
     ContentType: "n"
     LenType: fixed
-    Length:  3
+    MaxLen:  3
     Label: "Country Code, Acquiring Inst"
   20:
     Label: "Country Code, Primary Account Number"
     ContentType: "n"
-    Length:  3
+    MaxLen:  3
     LenType: fixed
   21:
     ContentType: "n"
     LenType: fixed
-    Length:  3
+    MaxLen:  3
     Label: "Country Code, Forwarding Inst"
   22:
     LenType: fixed
     ContentType: "n"
     Label: Point of Service Data Code
-    Length:  3
+    MaxLen:  3
   23:
-    Length:  3
+    MaxLen:  3
     LenType: fixed
     ContentType: "n"
     Label: Card Sequence Number
@@ -124,134 +124,134 @@ Fields:
     LenType: fixed
     ContentType: "n"
     Label: Function Code
-    Length:  3
+    MaxLen:  3
   25:
     Label: Message Reason Code
     ContentType: "n"
-    Length:  2
+    MaxLen:  2
     LenType: fixed
   26:
     ContentType: "n"
-    Length:  2
+    MaxLen:  2
     LenType: fixed
     Label: Card Acceptor Business Code
   27:
-    Length:  1
+    MaxLen:  1
     LenType: fixed
     Label: Approval Code Length
     ContentType: "n"
   28:
     Label: "Date, Reconciliation"
-    Length:  9
+    MaxLen:  9
     LenType: fixed
     ContentType: "n"
   29:
     ContentType: "n"
-    Length:  9
+    MaxLen:  9
     LenType: fixed
     Label: Reconciliation Indicator
   30:
     Label: "Amounts, Original"
-    Length:  24
+    MaxLen:  24
     LenType: fixed
     ContentType: "n"
   31:
     Label: Acquirer Reference Data
     LenType: llvar
-    Length:  99
+    MaxLen:  99
     ContentType: ans
   32:
     Label: " Acquirer Inst Id Code"
     LenType: llvar
     ContentType: "n"
-    Length:  11
+    MaxLen:  11
   33:
     Label: Forwarding Inst Id Code
     LenType: llvar
-    Length:  11
+    MaxLen:  11
     ContentType: "n"
   34:
     Label: "Primary Account Number, Extended"
     LenType: llvar
     ContentType: "n"
-    Length:  28
+    MaxLen:  28
   35:
     ContentType: z
     Label: Track 2 Data
-    Length:  37
+    MaxLen:  37
     LenType: llvar
   36:
     LenType: lllvar
     ContentType: z
     Label: Track 3 Data
-    Length:  104
+    MaxLen:  104
   37:
     Label: Retrieval Reference Number
     ContentType: anp
-    Length:  12
+    MaxLen:  12
     LenType: fixed
   38:
     LenType: fixed
     Label: Approval Code
     ContentType: anp
-    Length:  6
+    MaxLen:  6
   39:
     Label: Action Code
-    Length:  2
+    MaxLen:  2
     ContentType: "n"
     LenType: fixed
   40:
     LenType: fixed
-    Length:  3
+    MaxLen:  3
     Label: Service Code
     ContentType: "n"
   41:
     Label: Card Acceptor Terminal Id
-    Length:  8
+    MaxLen:  8
     LenType: fixed
     ContentType: ans
   42:
     ContentType: ans
     LenType: fixed
     Label: Card Acceptor Id Code
-    Length:  15
+    MaxLen:  15
   43:
     Label: Card Acceptor Name/Location
     LenType: fixed
     ContentType: ans
-    Length:  40
+    MaxLen:  40
   44:
     ContentType: ans
-    Length:  99
+    MaxLen:  99
     Label: dditional Response Data
     LenType: llvar
   45:
     Label: Track 1 Data
     LenType: llvar
-    Length:  76
+    MaxLen:  76
     ContentType: ans
   46:
     LenType: lllvar
-    Length:  204
+    MaxLen:  204
     ContentType: ans
     Label: "Amounts, Fees"
   47:
     Label: "Additional Data - National"
     ContentType: ans
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
   48:
-    Length:  999
+    MaxLen:  999
     LenType: lllvar
     Label: "Additional Data - Private"
     ContentType: ans
   49:
     ContentType: an
-    Length:  3
+    MaxLen:  3
     LenType: fixed
     Label: "Currency Code, Txn"
   50:
-    Length:  3
+    MaxLen:  3
     LenType: fixed
     ContentType: an
     Label: "Currency Code, Reconciliation"
@@ -259,54 +259,54 @@ Fields:
     LenType: fixed
     Label: "Currency Code, Cardholder Billing"
     ContentType: an
-    Length:  3
+    MaxLen:  3
   52:
     ContentType: ans
-    Length:  16
+    MaxLen:  16
     Label: Personal Id Number (PIN) Data
     LenType: fixed
   53:
     Label: Security Related Control Information
     LenType: fixed
-    Length:  16
+    MaxLen:  16
     ContentType: "n"
   54:
     ContentType: ans
-    Length:  120
+    MaxLen:  120
     LenType: lllvar
     Label: "Amounts, Additional"
   55:
     LenType: lllvar
     ContentType: ans
-    Length:  999
+    MaxLen:  999
     Label: IC Card System Related Data
   56:
     LenType: llvar
     ContentType: ans
     Label: Original Data Elements
-    Length:  35
+    MaxLen:  35
   57:
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
     ContentType: ans
     Label: Authorization Life Cycle Code
   58:
     Label: Authorizing Agent Inst Id Cod
-    Length:  999
+    MaxLen:  999
     LenType: lllvar
     ContentType: ans
   59:
     ContentType: ans
     Label: Transport Data
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
   60:
     ContentType: ans
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
     Label: Reserved for National use
   61:
-    Length:  999
+    MaxLen:  999
     Label: Reserved for National use
     ContentType: ans
     LenType: lllvar
@@ -314,54 +314,54 @@ Fields:
     LenType: lllvar
     Label: Reserved for Private use
     ContentType: ans
-    Length:  999
+    MaxLen:  999
   63:
-    Length:  999
+    MaxLen:  999
     Label: Reserved for Private use
     LenType: lllvar
     ContentType: ans
   64:
     ContentType: b
-    Length:  8
+    MaxLen:  8
     Label: Message Authentication Code Field
     LenType: fixed
   65:
     Label: Reserved for ISO use
     ContentType: b
-    Length:  8
+    MaxLen:  8
     LenType: fixed
   66:
-    Length:  1
+    MaxLen:  1
     LenType: fixed
     Label: "Reconciliation code , Original Fees"
     ContentType: ans
   67:
     LenType: fixed
     Label: Extended Payment Data
-    Length:  2
+    MaxLen:  2
     ContentType: "n"
   68:
     LenType: fixed
-    Length:  3
+    MaxLen:  3
     Label: "Country Code, Receiving Inst"
     ContentType: "n"
   69:
     LenType: fixed
     ContentType: "n"
     Label: "Country Code, Settlement Inst"
-    Length:  3
+    MaxLen:  3
   70:
     ContentType: "n"
     Label: "Network Management Information Code"
-    Length:  3
+    MaxLen:  3
     LenType: fixed
   71:
     Label: Message Number
     LenType: fixed
     ContentType: "n"
-    Length:  6
+    MaxLen:  6
   72:
-    Length:  999
+    MaxLen:  999
     ContentType: ans
     LenType: lllvar
     Label: Data Record
@@ -369,74 +369,74 @@ Fields:
     LenType: fixed
     Label: "Date, Action"
     ContentType: "n"
-    Length:  6
+    MaxLen:  6
   74:
     ContentType: "n"
     LenType: fixed
     Label: "Credits, Number"
-    Length:  10
+    MaxLen:  10
   75:
     LenType: fixed
     ContentType: "n"
     Label: "Credits, Reversal Number"
-    Length:  10
+    MaxLen:  10
   76:
     Label: "Debits, Number"
     ContentType: "n"
     LenType: fixed
-    Length:  10
+    MaxLen:  10
   77:
     ContentType: "n"
-    Length:  10
+    MaxLen:  10
     LenType: fixed
     Label: "Debits, Reversal Number"
   78:
     LenType: fixed
     ContentType: "n"
     Label: "Transfer, Number"
-    Length:  10
+    MaxLen:  10
   79:
     LenType: fixed
     Label: "Transfer, Reversal Number"
-    Length:  10
+    MaxLen:  10
     ContentType: "n"
   80:
     LenType: fixed
     Label: "Inquiries, Number"
-    Length:  10
+    MaxLen:  10
     ContentType: "n"
   81:
     LenType: fixed
     ContentType: "n"
-    Length:  10
+    MaxLen:  10
     Label: "Authorizations, Number"
   82:
     Label: "Inquiries, Reversal Number"
     ContentType: "n"
     LenType: fixed
-    Length:  10
+    MaxLen:  10
   83:
     ContentType: "n"
     Label: "Payments, Number"
-    Length:  10
+    MaxLen:  10
     LenType: fixed
   84:
     LenType: fixed
-    Length:  10
+    MaxLen:  10
     Label: "Payments, Reversal Number"
     ContentType: "n"
   85:
     Label: "Fee Collections, Number"
     LenType: fixed
-    Length:  10
+    MaxLen:  10
     ContentType: "n"
   86:
-    Length:  16
+    MaxLen:  16
     LenType: fixed
     Label: "Credits, Amount"
     ContentType: "n"
   87:
-    Length:  16
+    MaxLen:  16
     Label: "Credits, Reversal Amount"
     LenType: fixed
     ContentType: "n"
@@ -444,169 +444,169 @@ Fields:
     LenType: fixed
     ContentType: "n"
     Label: "Debits, Amount"
-    Length:  16
+    MaxLen:  16
   89:
-    Length:  16
+    MaxLen:  16
     Label: "Debits, Reversal Amount"
     ContentType: "n"
     LenType: fixed
   90:
-    Length:  42
+    MaxLen:  42
     Label: "Authorizations, Reversal Number"
     LenType: fixed
     ContentType: "n"
   91:
     LenType: fixed
     Label: "Country Code, Txn Destination Inst"
-    Length:  3
+    MaxLen:  3
     ContentType: "n"
   92:
     Label: "Country Code, Txn Originator Inst"
     LenType: fixed
-    Length:  3
+    MaxLen:  3
     ContentType: "n"
   93:
     Label: Txn Destination Inst Id Code
     LenType: llvar
-    Length:  11
+    MaxLen:  11
     ContentType: "n"
   94:
     ContentType: "n"
-    Length:  11
+    MaxLen:  11
     Label: Txn Originator Inst Id Code
     LenType: llvar
   95:
-    Length:  42
+    MaxLen:  42
     Label: Card Issuer Reference Data
     LenType: fixed
     ContentType: ans
   96:
     ContentType: b
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
     Label: Key Management Data
   97:
     ContentType: xs
     Label: "Amount, Net Reconciliation"
-    Length:  17
+    MaxLen:  17
     LenType: fixed
   98:
-    Length:  25
+    MaxLen:  25
     LenType: fixed
     ContentType: ans
     Label: Payee
   99:
-    Length:  11
+    MaxLen:  11
     LenType: llvar
     Label: Settlement Inst Id Code
     ContentType: an
   100:
     Label: Receiving Inst Id Code
-    Length:  11
+    MaxLen:  11
     LenType: llvar
     ContentType: "n"
   101:
     ContentType: ans
     Label: File Name
     LenType: llvar
-    Length:  17
+    MaxLen:  17
   102:
     LenType: llvar
     Label: Account Id 1
     ContentType: ans
-    Length:  28
+    MaxLen:  28
   103:
-    Length:  28
+    MaxLen:  28
     ContentType: ans
     LenType: llvar
     Label: Account Id 2
   104:
     Label: Txn Description
     ContentType: ans
-    Length:  255
+    MaxLen:  255
     LenType: lllvar
   105:
     LenType: fixed
-    Length:  16
+    MaxLen:  16
     Label: "Credits, Chargeback Amount"
     ContentType: "n"
   106:
-    Length:  16
+    MaxLen:  16
     Label: "Debits, Chargeback Amount"
     LenType: fixed
     ContentType: "n"
   107:
     ContentType: "n"
-    Length:  10
+    MaxLen:  10
     LenType: fixed
     Label: "Credits, Chargeback Number"
   108:
     LenType: fixed
-    Length:  10
+    MaxLen:  10
     ContentType: "n"
     Label: "Debits, Chargeback Number"
   109:
     LenType: llvar
-    Length:  84
+    MaxLen:  84
     ContentType: ans
     Label: "Credits, Fee Amounts"
   110:
     ContentType: ans
     LenType: llvar
     Label: "Debits, Fee Amounts"
-    Length:  84
+    MaxLen:  84
   111:
     LenType: fixed
-    Length:  12
+    MaxLen:  12
     ContentType: "n"
     Label: Reserved for ISO use
   112:
     Label: Reserved for ISO use
     ContentType: ans
-    Length:  999
+    MaxLen:  999
     LenType: lllvar
   113:
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
     Label: Reserved for ISO use
     ContentType: ans
   114:
     Label: Reserved for ISO use
-    Length:  999
+    MaxLen:  999
     ContentType: ans
     LenType: lllvar
   115:
     Label: Reserved for ISO use
     ContentType: ans
-    Length:  999
+    MaxLen:  999
     LenType: lllvar
   116:
-    Length:  999
+    MaxLen:  999
     Label: Reserved for National use
     LenType: lllvar
     ContentType: ans
   117:
     Label: Reserved for National use
-    Length:  999
+    MaxLen:  999
     LenType: lllvar
     ContentType: ans
   118:
     Label: Reserved for National use
     ContentType: ans
     LenType: lllvar
-    Length:  999
+    MaxLen:  999
   119:
     LenType: lllvar
     Label: Reserved for National use
     ContentType: ans
-    Length:  999
+    MaxLen:  999
   120:
     Label: Reserved for National use
-    Length:  999
+    MaxLen:  999
     ContentType: ans
     LenType: lllvar
   121:
-    Length:  999
+    MaxLen:  999
     Label: Reserved for National use
     LenType: lllvar
     ContentType: ans
@@ -614,9 +614,9 @@ Fields:
     LenType: lllvar
     Label: Reserved for National use
     ContentType: ans
-    Length:  999
+    MaxLen:  999
   123:
-    Length:  999
+    MaxLen:  999
     LenType: lllvar
     Label: Reserved for Private use
     ContentType: ans
@@ -624,24 +624,24 @@ Fields:
     LenType: lllvar
     ContentType: ans
     Label: Reserved for Private use
-    Length:  999
+    MaxLen:  999
   125:
     Label: Reserved for Private use
     LenType: lllvar
     ContentType: ans
-    Length:  999
+    MaxLen:  999
   126:
     Label: Reserved for Private use
-    Length:  999
+    MaxLen:  999
     ContentType: ans
     LenType: lllvar
   127:
     LenType: lllvar
     Label: Reserved for Private use
     ContentType: ans
-    Length:  999
+    MaxLen:  999
   128:
     ContentType: b
     LenType: fixed
-    Length:  8
+    MaxLen:  8
     Label: Message Authentication Code Field

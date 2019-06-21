@@ -38,7 +38,7 @@ func TestISOParse(t *testing.T) {
 	if isomsgUnpacked != isomsg {
 		t.Errorf("%s should be %s", isomsgUnpacked, isomsg)
 	}
-	// fmt.Printf("%#v, %#v\n%#v", parsed.Mti, parsed.Bitmap, parsed.Elements)
+	//fmt.Printf("%v\n", parsed.Data())
 }
 
 func TestEmpty(t *testing.T) {
@@ -54,7 +54,7 @@ func TestEmpty(t *testing.T) {
 		t.Errorf("failed to unpack valid isomsg")
 	}
 
-	if one.Mti.String() != "" {
+	if one.mti != "" {
 		t.Errorf("Empty generates invalid MTI")
 	}
 	if err = one.AddMTI("0200"); err != nil {
