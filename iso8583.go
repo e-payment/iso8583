@@ -240,6 +240,10 @@ func extractFieldFromElements(fieldID, str string) (result Field, rest string, e
 		//fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, extractedField, str)
 	}
 
+	if err = result.Validate(); err != nil {
+		return
+	}
+
 	if fieldLength > fieldDescription.MaxLen {
 		err = fmt.Errorf("Field %d's length of %d (%s) is greater than the maximum allowed of %d", field, fieldLength, result.Value, fieldDescription.MaxLen)
 		return

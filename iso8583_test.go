@@ -23,6 +23,7 @@ func TestISOParse(t *testing.T) {
 
 	//0200 3220000000808000 000010 000000001500 1206041200 000001 12340001 840
 	isomsg := "02003220000000808000000010000000001500120604120000000112340001840"
+	//isomsg := "22003220000000808000000010000000001500120604120000000112340001840787438748787878"
 
 	parsed, err := Parse(isomsg)
 	if err != nil {
@@ -39,6 +40,7 @@ func TestISOParse(t *testing.T) {
 		t.Errorf("%s should be %s", isomsgUnpacked, isomsg)
 	}
 	//fmt.Printf("%v\n", parsed.Data())
+	//fmt.Printf("%v\n", parsed.spec.messageFlows)
 }
 
 func TestEmpty(t *testing.T) {

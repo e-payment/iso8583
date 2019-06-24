@@ -150,13 +150,13 @@ Fields:
     Label: "Date and Time, Local Txn"
     Subfields:
       0: 
-        Label: Currency code
+        Label: Date local transaction
         ContentType: n
         LenType: fixed
         Format: CCYYMMDD
         MaxLen:  8
       1:
-        Label: Currency minor unit
+        Label: Time local transaction
         ContentType: n
         LenType: fixed
         Format: hhmmss

@@ -46,8 +46,26 @@ type (
 	// Spec contains a strutured description of an iso8583 spec
 	// properly defined by a spec file
 	Spec struct {
-		version string
-		fields  map[int]FieldDescription
+		version      string
+		fields       map[int]FieldDescription
+		messageFlows map[string]MessageFlow
+	}
+
+	MessageFlow struct {
+		RepeaterMTI     string
+		ResponseMTI     string
+		Response        string
+		Context         string
+		Flow            string
+		Name            string
+		Source          string
+		Destination     string
+		Description     string
+		MandatoryFields map[int]string
+	}
+
+	MandatoryFields struct {
+		Fields map[string]map[int]string
 	}
 
 	// ValidationError happens when validation fails

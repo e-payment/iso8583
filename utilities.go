@@ -1,13 +1,17 @@
 package iso8583
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -166,8 +170,50 @@ func ValidateMti(mti string) error {
 	return nil
 }
 
-func validateField(data string, desc FieldDescription) (err error) {
+func (f Field) Validate() (err error) {
+	desc, _, _, err := DescribeField(f.ID)
+	if err != nil {
+		return
+	}
+
+	switch desc.ContentType {
+	case "ans", "anb", "ansb", "b", "bmps":
+	case "n":
+		err = validation.Validate(f.Value, is.UTFLetterNumeric)
+	case "a":
+		err = validation.Validate(f.Value, is.Alpha)
+	case "an":
+		err = validation.Validate(f.Value, is.Alphanumeric)
+	case "anp": //alphanumeric with right space padding
+		err = validation.Validate(strings.TrimRight(f.Value, " "), is.UTFLetterNumeric)
+	case "xn":
+		if string(f.Value[0]) != "c" && string(f.Value[0]) != "d" {
+			err = errors.New("XN value must be prefixed with a c or d")
+			break
+		}
+		err = validation.Validate(f.Value[1:], is.UTFLetterNumeric)
+	case "z":
+		//Tracks 2 and 3 code set as specified in ISO 4909, ISO 7811-2 and ISO 7813.
+		//Most of track 2 data is already in track 1. Track 3 is almost never used,
+		//so we will simply store and not validate for now because it is a bit more complex
+	default:
+		err = errors.New("Invalid content type")
+	}
+
 	return
+}
+
+//We only retrieve date time values, so if a field has separate date and time, join them before passing
+func parseTimeFormat(value string) (result time.Time, err error) {
+	format := "CCYYMMDDhhmmss"
+	if len(value) != len(format) {
+		err = fmt.Errorf("%s is not formatted as %s", value, format)
+		return
+	}
+
+	layout := "2006-01-02T15:04:05.000Z"
+	datestring := fmt.Sprintf("%s-%s-%sT%s:%s:%s.000Z", value[0:4], value[4:6], value[6:8], value[8:10], value[10:12], value[12:14])
+	return time.Parse(layout, datestring)
 }
 
 func validateSubField(data string, subIndex int, desc FieldDescription) (err error) {
@@ -192,7 +238,11 @@ func (s *Spec) readFromFile(filename string) error {
 	}
 
 	var temp TempSpec
-	yaml.Unmarshal(content, &temp) // expecting content to be valid yaml
+	err = yaml.Unmarshal(content, &temp) // expecting content to be valid yaml
+	if err != nil {
+		return err
+	}
+
 	if !strings.Contains(strings.Join([]string{SPEC1987, SPEC1993, SPEC2003}, ","), temp.Version) {
 		return fmt.Errorf("Invalid spec version %v.", temp.Version)
 	}
@@ -202,7 +252,49 @@ func (s *Spec) readFromFile(filename string) error {
 	}
 
 	s.version, s.fields = temp.Version, temp.Fields
+
+	s.messageFlows, err = loadFlows(filename)
 	return nil
+}
+
+func loadFlows(filename string) (flows map[string]MessageFlow, err error) {
+	filename = strings.TrimSuffix(strings.TrimSuffix(filename, ".yaml"), ".yml")
+	flowsFilename := filename + ".flow.json"
+	mandatoryFieldsFilename := filename + ".mandatory.yaml"
+
+	content, err := ioutil.ReadFile(flowsFilename)
+	if err != nil {
+		return
+	}
+
+	if err = json.Unmarshal(content, &flows); err != nil {
+		return nil, err
+	}
+
+	var mandatoryFields map[int]map[string]string
+
+	//If an error occurs, we simply do not set the mandatory fields to the specific message
+	content, _ = ioutil.ReadFile(mandatoryFieldsFilename)
+	if err = yaml.Unmarshal(content, &mandatoryFields); err != nil {
+		return flows, nil
+	}
+
+	for index, flow := range flows {
+		for fieldIndex, field := range mandatoryFields {
+			if fieldRequirement, ok := field[index]; ok {
+				flowFields := flow.MandatoryFields
+				if flowFields == nil {
+					flowFields = make(map[int]string)
+				}
+				flowFields[fieldIndex] = fieldRequirement
+				flow.MandatoryFields = flowFields
+			}
+
+		}
+		flows[index] = flow
+	}
+
+	return
 }
 
 // SpecFromFile returns a brand new empty spec
