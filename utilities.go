@@ -139,7 +139,7 @@ func DecodeFieldID(fieldID string) (spec string, indices []int, level int, err e
 	return
 }
 
-func (iso *Message) GetFlow() (flow MessageFlow, err error) {
+func (iso *Message) GetFlow() (flow, response MessageFlow, err error) {
 	if iso.spec.messageFlows == nil {
 		err = fmt.Errorf("Message flows are not supported for spec %s", iso.spec.Version())
 		return
@@ -155,6 +155,13 @@ func (iso *Message) GetFlow() (flow MessageFlow, err error) {
 	if !ok {
 		err = fmt.Errorf("No flow available for mti %s", iso.mti)
 		return
+	}
+
+	if flow.ResponseMTI != "" {
+		if response, ok = iso.spec.messageFlows[flow.ResponseMTI]; !ok {
+			err = fmt.Errorf("Message %s requires a response but there is no flow for response %s", message, flow.ResponseMTI)
+			return
+		}
 	}
 
 	return
