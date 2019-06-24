@@ -139,6 +139,27 @@ func DecodeFieldID(fieldID string) (spec string, indices []int, level int, err e
 	return
 }
 
+func (iso *Message) GetFlow() (flow MessageFlow, err error) {
+	if iso.spec.messageFlows == nil {
+		err = fmt.Errorf("Message flows are not supported for spec %s", iso.spec.Version())
+		return
+	}
+
+	if err = ValidateMti(iso.mti); err != nil {
+		return
+	}
+
+	message := iso.mti[1:3]
+
+	flow, ok := iso.spec.messageFlows[message]
+	if !ok {
+		err = fmt.Errorf("No flow available for mti %s", iso.mti)
+		return
+	}
+
+	return
+}
+
 func leftPad(s string, length int, pad string) string {
 	if len(s) >= length {
 		return s
