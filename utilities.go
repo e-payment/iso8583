@@ -167,6 +167,31 @@ func (iso *Message) GetFlow() (flow, response MessageFlow, err error) {
 	return
 }
 
+//This gets very complex, so won't validate now, but framework is prepared
+func (iso *Message) ValidateFlowFields() (err error) {
+	if iso.data == nil {
+		return fmt.Errorf("ISO message has no data")
+	}
+
+	flow, _, err := iso.GetFlow()
+	if err != nil {
+		return
+	}
+
+	if flow.MandatoryFields == nil {
+		return fmt.Errorf("No mandatory fields found for messat %s. Check if fields have been configured", iso.mti)
+	}
+
+	for field, requirement := range flow.MandatoryFields {
+		value, ok := iso.data[field]
+		if requirement == "M" && (!ok || value.Value == "") {
+			return fmt.Errorf("Message %s is missing mandatory field %d with requirement status %s", iso.mti, field, requirement)
+		}
+	}
+
+	return
+}
+
 func leftPad(s string, length int, pad string) string {
 	if len(s) >= length {
 		return s
