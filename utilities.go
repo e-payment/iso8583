@@ -149,7 +149,7 @@ func (iso *Message) GetFlow() (flow, response MessageFlow, err error) {
 		return
 	}
 
-	message := iso.mti[1:3]
+	message := iso.mti[1:4]
 
 	flow, ok := iso.spec.messageFlows[message]
 	if !ok {
@@ -165,6 +165,28 @@ func (iso *Message) GetFlow() (flow, response MessageFlow, err error) {
 	}
 
 	return
+}
+
+func (iso *Message) GetFieldByTag(tag string) (field Field, err error) {
+	index, ok := fieldMap[tag]
+	if !ok {
+		err = fmt.Errorf("Field %s not found in field list", tag)
+		return
+	}
+
+	data := iso.Data()
+	if data == nil {
+		err = fmt.Errorf("Message has no data", tag)
+		return
+	}
+
+	field, ok = data[index]
+	if !ok {
+		err = fmt.Errorf("Field %s with index %d not found in message data", tag, index)
+		return
+	}
+
+	return field, nil
 }
 
 //This gets very complex, so won't validate now, but framework is prepared
