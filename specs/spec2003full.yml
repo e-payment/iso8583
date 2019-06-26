@@ -16,7 +16,7 @@ Fields:
     MaxLen:  19
     Label: Primary Account Number
   3:
-    ContentType: "n"
+    ContentType: "an"
     LenType: fixed
     MaxLen:  6
     Label: Processing Code

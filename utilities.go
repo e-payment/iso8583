@@ -139,6 +139,14 @@ func DecodeFieldID(fieldID string) (spec string, indices []int, level int, err e
 	return
 }
 
+func (iso *Message) MessageCode() (code string) {
+	if err := ValidateMti(iso.mti); err != nil {
+		return ""
+	}
+
+	return iso.mti[1:4]
+}
+
 func (iso *Message) GetFlow() (flow, response MessageFlow, err error) {
 	if iso.spec.messageFlows == nil {
 		err = fmt.Errorf("Message flows are not supported for spec %s", iso.spec.Version())
@@ -167,22 +175,16 @@ func (iso *Message) GetFlow() (flow, response MessageFlow, err error) {
 	return
 }
 
-func (iso *Message) GetFieldByTag(tag string) (field Field, err error) {
-	index, ok := fieldMap[tag]
-	if !ok {
-		err = fmt.Errorf("Field %s not found in field list", tag)
-		return
-	}
-
+func (iso *Message) GetField(index int) (field Field, err error) {
 	data := iso.Data()
 	if data == nil {
-		err = fmt.Errorf("Message has no data", tag)
+		err = fmt.Errorf("Message has no data")
 		return
 	}
 
-	field, ok = data[index]
+	field, ok := data[index]
 	if !ok {
-		err = fmt.Errorf("Field %s with index %d not found in message data", tag, index)
+		err = fmt.Errorf("Field %d not found in message data", index)
 		return
 	}
 
