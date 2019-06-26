@@ -127,37 +127,37 @@ const (
 
 	//Authorization and transaction messages: 110,120,121,140 and 210,220,221 and 240
 	//Meaning: indicate that the transaction has processed by or on behalf of issuer and denied (not requiring a card pick-up)
-	RC_DECLINED_DO_NOT_HONOR         = "00" // do not honor
-	RC_DECLINED_EXPIRED_CARD         = "01" // expired card
-	RC_DECLINED_SUSPECTED            = "02" // suspected fraud
-	RC_DECLINED_CONTACT_ACQ          = "03" // card acceptor contact acquirer
-	RC_DECLINED_RESTRICTED           = "04" // restricted card
-	RC_DECLINED_CALL_ACQ             = "05" // card acceptor call acquirer's security department
-	RC_DECLINED_PIN_EXCEED           = "06" // allowable PIN tries exceeded
-	RC_DECLINED_REFER_ISSR           = "07" // refer to card issuer
-	RC_DECLINED_REFER_ISSR_COND      = "08" // refer to card issuer's special conditions
-	RC_DECLINED_INVALID_MERCHANT     = "09" // invalid merchant
-	RC_DECLINED_INVALID_AMOUNT       = "10" // invalid amount
-	RC_DECLINED_INVALID_CARD         = "11" // invalid card number
-	RC_DECLINED_PIN_REQUIRED         = "12" // PIN data required
-	RC_DECLINED_UNACCEPT_FEE         = "13" // unacceptable fee
-	RC_DECLINED_ACCT_REQ             = "14" // no account of type requested
-	RC_DECLINED_FUNC_NOT_SUPPORT     = "15" // requested function not supported
-	RC_DECLINED_NOT_SUFF_FUNDS       = "16" // not sufficient funds
-	RC_DECLINED_INCORRECT_PIN        = "17" // incorrect PIN
-	RC_DECLINED_NO_CARD_RECORD       = "18" // no card record
-	RC_DECLINED_NOT_ALLOW_CARDHOLDER = "19" // transaction not permitted to cardholder
+	RC_DECLINED_DO_NOT_HONOR         = "100" // do not honor
+	RC_DECLINED_EXPIRED_CARD         = "101" // expired card
+	RC_DECLINED_SUSPECTED            = "102" // suspected fraud
+	RC_DECLINED_CONTACT_ACQ          = "103" // card acceptor contact acquirer
+	RC_DECLINED_RESTRICTED           = "104" // restricted card
+	RC_DECLINED_CALL_ACQ             = "105" // card acceptor call acquirer's security department
+	RC_DECLINED_PIN_EXCEED           = "106" // allowable PIN tries exceeded
+	RC_DECLINED_REFER_ISSR           = "107" // refer to card issuer
+	RC_DECLINED_REFER_ISSR_COND      = "108" // refer to card issuer's special conditions
+	RC_DECLINED_INVALID_MERCHANT     = "109" // invalid merchant
+	RC_DECLINED_INVALID_AMOUNT       = "110" // invalid amount
+	RC_DECLINED_INVALID_CARD         = "111" // invalid card number
+	RC_DECLINED_PIN_REQUIRED         = "112" // PIN data required
+	RC_DECLINED_UNACCEPT_FEE         = "113" // unacceptable fee
+	RC_DECLINED_ACCT_REQ             = "114" // no account of type requested
+	RC_DECLINED_FUNC_NOT_SUPPORT     = "115" // requested function not supported
+	RC_DECLINED_NOT_SUFF_FUNDS       = "116" // not sufficient funds
+	RC_DECLINED_INCORRECT_PIN        = "117" // incorrect PIN
+	RC_DECLINED_NO_CARD_RECORD       = "118" // no card record
+	RC_DECLINED_NOT_ALLOW_CARDHOLDER = "119" // transaction not permitted to cardholder
 
-	RC_DECLINED_NOT_ALLOW_TERMINAL  = "20" // transaction not permitted to terminal
-	RC_DECLINED_EXCEED_AMOUNT_LIMIT = "21" // exceeds withdrawal amount limit
-	RC_DECLINED_VIOLATION           = "22" // security violation
-	RC_DECLINED_EXCEED_FREQ_LIMIT   = "23" // exceeds withdrawal frequency limit
-	RC_DECLINED_VIOLATION_LAW       = "24" // violation of law
-	RC_DECLINED_NOT_EFFECTIVE       = "25" // card not effective
-	RC_DECLINED_INVALID_PIN         = "26" // invalid PIN block
-	RC_DECLINED_PIN_LENGTH          = "27" // PIN length error
-	RC_DECLINED_PIN_SYNC            = "28" // PIN key synch error
-	RC_DECLINED_SUSPECTED_COUNTER   = "29" // suspected counterfeit card
+	RC_DECLINED_NOT_ALLOW_TERMINAL  = "120" // transaction not permitted to terminal
+	RC_DECLINED_EXCEED_AMOUNT_LIMIT = "121" // exceeds withdrawal amount limit
+	RC_DECLINED_VIOLATION           = "122" // security violation
+	RC_DECLINED_EXCEED_FREQ_LIMIT   = "123" // exceeds withdrawal frequency limit
+	RC_DECLINED_VIOLATION_LAW       = "124" // violation of law
+	RC_DECLINED_NOT_EFFECTIVE       = "125" // card not effective
+	RC_DECLINED_INVALID_PIN         = "126" // invalid PIN block
+	RC_DECLINED_PIN_LENGTH          = "127" // PIN length error
+	RC_DECLINED_PIN_SYNC            = "128" // PIN key synch error
+	RC_DECLINED_SUSPECTED_COUNTER   = "129" // suspected counterfeit card
 
 	//Authorization and transaction messages: 110,120,121,140 and 210,220,221 and 240
 	//Meaning: indicate that the transaction has processed by or on behalf of issuer and denied (requiring a card to be pick-up.)
