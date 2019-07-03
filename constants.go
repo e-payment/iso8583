@@ -1,11 +1,17 @@
 package iso8583
 
 const (
-	//Source: https://help.sap.com/doc/saphelp_pos22/2.2/en-US/e8/097fdfd4164e639361c7cbeaf306f7/content.htm?no_cache=true
+	//Sources:
+	//https://help.sap.com/doc/saphelp_pos22/2.2/en-US/e8/097fdfd4164e639361c7cbeaf306f7/content.htm?no_cache=true
+	//https://www.admfactory.com/iso8583-flows-data-elements-meaning-and-values/
 
 	//ISO message definitions
 
 	// authorization messages
+	//An authorization is an approval or guarantee of funds given by the card issuer to the acquirer.
+	//The acquirer seeks authorization from the card issuer or advises the card issuer of authorization already given,
+	//by means of the authorization message class. An authorization is not intended to permit the application
+	//of the approved transaction amount to the cardholder's account for billing or posting.
 	AUTH_REQ           = "100" // authorization request
 	AUTH_REQ_REPEAT    = "101" // authorization request repeat
 	AUTH_REQ_RESP      = "110" // authorization request response
@@ -16,6 +22,10 @@ const (
 	AUTH_NOTIFY_RESP   = "150" // authorization notification response
 
 	// verification messages
+	//Verification messages may be used to request verification or authentication.
+	//This message class may be used for authentication of certificates, certificate management,
+	//address verification, cash transactions, cheque verification or any other transactions that
+	//do not require a subsequent financial presentment message to complete the transaction.
 	VERIF_REQ           = "104" // verification request
 	VERIF_REQ_REPEAT    = "105" // verification request repeat
 	VERIF_REQ_RESP      = "114" // verification request response
@@ -123,7 +133,7 @@ const (
 	RC_APPROVED_ACCT_SPEC    = "005" // approved, account type specified by card issuer
 	RC_APPROVED_PARTIAL_SPEC = "006" // approved for partial amount; account type specified by card issuer
 	RC_APPROVED_ICC          = "007" // approved, update ICC
-	RC_APPROVED_NEED_CNFM    = "80"  // approved, but need confirmation(used for CIBC and NOVA debit card processing mode
+	RC_APPROVED_NEED_CNFM    = "080" // approved, but need confirmation(used for CIBC and NOVA debit card processing mode
 
 	//Authorization and transaction messages: 110,120,121,140 and 210,220,221 and 240
 	//Meaning: indicate that the transaction has processed by or on behalf of issuer and denied (not requiring a card pick-up)
@@ -249,15 +259,15 @@ const (
 	// 000-099 reserved for ISO use
 
 	// 100-199 Used in 100;101;120;121 and 140 messages
-	FUNC_AUTH_ORIGAUTH_ACCUAMT = "00" // original authorization - amount accurate
-	FUNC_AUTH_ORIGAUTH_ESTIAMT = "01" // original authorization - amount estimated
-	FUNC_AUTH_REPLAUTH_ACCUAMT = "02" // replacement authorization - amount accurate
-	FUNC_AUTH_REPLAUTH_ESTIAMT = "03" // replacement authorization - amount estimated
-	FUNC_AUTH_RESUBM_ACCUAMT   = "04" // resubmission - amount accurate
-	FUNC_AUTH_RESUBM_ESTIAMT   = "05" // resubmission - amount estimated
-	FUNC_AUTH_SUPMAUTH_ACCUAMT = "06" // supplementary authorization - amount accurate
-	FUNC_AUTH_SUPMAUTH_ESTIAMT = "07" // supplementary authorization - amount estimated
-	FUNC_AUTH_INQUIRY          = "08" // inquiry
+	FUNC_AUTH_ORIGAUTH_ACCUAMT = "100" // original authorization - amount accurate
+	FUNC_AUTH_ORIGAUTH_ESTIAMT = "101" // original authorization - amount estimated
+	FUNC_AUTH_REPLAUTH_ACCUAMT = "102" // replacement authorization - amount accurate
+	FUNC_AUTH_REPLAUTH_ESTIAMT = "103" // replacement authorization - amount estimated
+	FUNC_AUTH_RESUBM_ACCUAMT   = "104" // resubmission - amount accurate
+	FUNC_AUTH_RESUBM_ESTIAMT   = "105" // resubmission - amount estimated
+	FUNC_AUTH_SUPMAUTH_ACCUAMT = "106" // supplementary authorization - amount accurate
+	FUNC_AUTH_SUPMAUTH_ESTIAMT = "107" // supplementary authorization - amount estimated
+	FUNC_AUTH_INQUIRY          = "108" // inquiry
 
 	// 200-299 Used in 1200;1201,1220,1221 and 1240 message
 	FUNC_FIN_ORIGFIN_TXN         = "200" // original financial request/advice
@@ -352,7 +362,7 @@ const (
 	AMT_CASH  = "40" // amount cash
 	AMT_GOODS = "41" // amount goods and services
 
-	// ISO 8583(1993) processing code - field 3(12)
+	// ISO 8583(1993) processing code - field 3(12) : http://www.fintrnmsgtool.com/iso-processing-code.html
 
 	// 00-19 debits
 	TPC_DB_GOODS_AND_SERVICE = "00" // goods and service
@@ -363,11 +373,11 @@ const (
 	TPC_DB_EURO_CHEQUE       = "05" // eurocheque
 	TPC_DB_TRAVEL_CHEQUE     = "06" // traveller cheque
 	TPC_DB_LETTER_CREDIT     = "07" // letter of credit
-	TPC_DB_GIRO              = "8"  // giro(postal banking)
-	TPC_DB_DISBURSE          = "9"  // goods and services with cash disbursement
-	TPC_DB_NON_CASH          = "0"  // non-cash financial instrument(e.g.wire transfer)
-	TPC_DB_QUASI             = "1"  // quasi-cash and scrip
-	TPC_DB_SECOND_REQUEST    = "7"  // Tender Retail second request message
+	TPC_DB_GIRO              = "08" // giro(postal banking)
+	TPC_DB_DISBURSE          = "09" // goods and services with cash disbursement
+	TPC_DB_NON_CASH          = "10" // non-cash financial instrument(e.g.wire transfer)
+	TPC_DB_QUASI             = "11" // quasi-cash and scrip
+	TPC_DB_SECOND_REQUEST    = "17" // Tender Retail second request message
 
 	// 20-29 credits
 	TPC_CR_RETURN       = "20" // returns
@@ -397,7 +407,7 @@ const (
 
 	// ISO 8583 (1993) account type - field 3(34/56)
 	ACCNT_DEFAULT      = "00" // default - unspecified
-	ACCNT_SAVING       = "0"  // saving account - default
+	ACCNT_SAVING       = "10" // saving account - default
 	ACCNT_CHEQUE       = "20" // cheque account - default
 	ACCNT_CREDIT       = "30" // credit facility - default
 	ACCNT_UNIVERSAL    = "40" // universal account - default
@@ -406,13 +416,23 @@ const (
 	ACCNT_STOREVALUE   = "91" // store value card
 	ACCNT_GIFT         = "92" // gift card
 
-	// ISO Card Data Input Capability
-	CARD_CAPTURE_UNKNOWN  = 0
-	CARD_CAPTURE_MANUAL   = 1
-	CARD_CAPTURE_SWIPED   = 2
-	CARD_CAPTURE_SCANNED  = 3
-	CARD_CAPTURE_OCR      = 4
-	CARD_CAPTURE_ICC      = 5
-	CARD_CAPTURE_KEYED    = 6
-	CARD_CAPTURE_RESERVED = 7
+	//Field 22 - Point of service entry mode
+	//POS entry mode field is a constructed data element (field) and is used
+	//to capture the account number and pin capture capability of the terminal
+
+	// ISO Card Data Input Capability (subfield 1)
+	CARD_CAPTURE_UNKNOWN     = "00"
+	CARD_CAPTURE_MANUAL      = "01"
+	CARD_CAPTURE_SWIPED      = "02"
+	CARD_CAPTURE_BARCODESCAN = "03"
+	CARD_CAPTURE_OCR         = "04"
+	CARD_CAPTURE_ICC         = "05"
+	CARD_CAPTURE_KEYED       = "06"
+
+	// ISO Card Data PIN Capability (subfield 2)
+	PIN_CAPABILITY_UNKNOWN        = "0"
+	PIN_CAPABILITY_AVAILABLE      = "1"
+	PIN_CAPABILITY_UNAVAILABLE    = "2"
+	PIN_CAPABILITY_OUT_OF_SERVICE = "8"
+	PIN_VERIFIED_BY_TERMINAL      = "9"
 )

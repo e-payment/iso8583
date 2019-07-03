@@ -31,7 +31,7 @@ func fromBCD(m []byte) (str string, err error) {
 func (iso *Message) ToString() (string, error) {
 	var str string
 	// get done with the mti and the bitmap
-	bitmapString := hex.EncodeToString(iso.Bitmap())
+	bitmapString := strings.ToUpper(hex.EncodeToString(iso.Bitmap()))
 
 	// bcdInts, err := fromBCD(iso.Bitmap)
 	// if err != nil {
@@ -59,15 +59,145 @@ func (iso *Message) AddMTI(data string) error {
 	//fmt.Printf("MTI: %s\n", iso.Mti)
 	return nil
 }
+func (iso *Message) AddTransactionAmount(currency, amount, decimals int64) (err error) {
+	var amountField string
+
+	if len(fmt.Sprint(currency)) > 3 || len(fmt.Sprint(amount)) > 12 || len(fmt.Sprint(decimals)) > 1 {
+		return errors.New("Amounts are too long for field size")
+	}
+
+	switch iso.spec.version {
+	case "1987", "1993":
+		amountField = fmt.Sprintf("%012d", amount)
+	case "2003":
+		amountField = fmt.Sprintf("%03d%d%012d", currency, decimals, amount)
+	}
+
+	return iso.AddField(BIT87_TRANSACTION_AMOUNT, amountField)
+}
+
+func (iso *Message) UpdateTransactionAmount(amount int64) (err error) {
+	if len(fmt.Sprint(amount)) > 12 {
+		return errors.New("Amount is too long for field size")
+	}
+
+	amountField, err := iso.GetField(BIT87_TRANSACTION_AMOUNT)
+	if err != nil {
+		return
+	}
+
+	amountStr := amountField.Value
+
+	switch len(amountStr) {
+	case 12:
+		amountStr = fmt.Sprint(amount)
+	case 16:
+		amountStr = amountStr[:4] + fmt.Sprint(amount)
+	default:
+		return errors.New("Invalid amount field length")
+	}
+
+	return iso.AddField(BIT87_TRANSACTION_AMOUNT, amountStr)
+
+}
+
+func (iso *Message) AddOriginalTransactionAmount(currency, amount, decimals int64) (err error) {
+	var amountField string
+
+	if len(fmt.Sprint(currency)) > 3 || len(fmt.Sprint(amount)) > 12 || len(fmt.Sprint(decimals)) > 1 {
+		return errors.New("Amounts are too long for field size")
+	}
+
+	switch iso.spec.version {
+	case "1987", "1993":
+		amountField = fmt.Sprintf("%012d", amount)
+	case "2003":
+		amountField = fmt.Sprintf("%03d%d%012d", currency, decimals, amount)
+	}
+
+	return iso.AddField(BIT87_ORIGINAL_AMOUNT, amountField)
+}
+
+func (iso *Message) UpdateOriginalTransactionAmount(amount int64) (err error) {
+	if len(fmt.Sprint(amount)) > 12 {
+		return errors.New("Amount is too long for field size")
+	}
+
+	amountField, err := iso.GetField(BIT87_ORIGINAL_AMOUNT)
+	if err != nil {
+		return
+	}
+
+	amountStr := amountField.Value
+
+	switch len(amountStr) {
+	case 12:
+		amountStr = fmt.Sprint(amount)
+	case 16:
+		amountStr = amountStr[:4] + fmt.Sprint(amount)
+	default:
+		return errors.New("Invalid amount field length")
+	}
+
+	return iso.AddField(BIT87_ORIGINAL_AMOUNT, amountStr)
+
+}
+
+func (iso *Message) ResponseStr(messageClass, responseCode string) (response string, err error) {
+	if err = ValidateMti(iso.mti); err != nil {
+		return
+	}
+
+	new := Message{spec: iso.spec, bitmap: iso.bitmap, data: iso.data}
+
+	if err = new.AddMTI(string(iso.mti[0]) + messageClass); err != nil {
+		return
+	}
+
+	if responseCode != "" {
+		if err = new.AddField(BIT87_ACTION_CODE, responseCode); err != nil {
+			return
+		}
+	}
+
+	if messageClass == AUTH_ADVICE_RESP || messageClass == AUTH_REQ_RESP || messageClass == AUTH_NOTIFY_RESP &&
+		!(responseCode == RC_APPROVED || responseCode == RC87_APPROVED) {
+		new.UpdateTransactionAmount(0)
+		new.UpdateOriginalTransactionAmount(0)
+
+	}
+
+	return new.ToString()
+}
+
+func (iso *Message) Response(messageClass, responseCode string) (response Message, err error) {
+	if err = ValidateMti(iso.mti); err != nil {
+		return
+	}
+
+	response = Message{spec: iso.spec, bitmap: iso.bitmap, data: iso.data}
+
+	if err = response.AddMTI(string(iso.mti[0]) + messageClass); err != nil {
+		return
+	}
+
+	if responseCode != "" {
+		if err = response.AddField(BIT87_ACTION_CODE, responseCode); err != nil {
+			return
+		}
+	}
+
+	return
+}
 
 // AddField adds the provided iso8583 field into the current struct
 // also updates the bitmap in the process
 func (iso *Message) AddField(field int, data string) error {
-	if field < 2 || field > BitMapLen(iso.bitmap) {
-		return fmt.Errorf("expected field to be between %d and %d found %d instead", 2, len(iso.bitmap), field)
+	if field < 2 || field > 128 {
+		return fmt.Errorf("expected field to be between %d and %d found %d instead", 2, 128, field)
 	}
 
-	if field >= 65 {
+	if field > 64 {
 		SetBit(iso.bitmap, 0)
 		if len(iso.bitmap) == 8 {
 			iso.bitmap = append(iso.bitmap, make([]byte, 8)...) //increase bitmap
@@ -161,31 +291,35 @@ func extractMTI(str string) (spec Spec, mti, rest string, err error) {
 }
 
 func extractBitmap(rest string) (bytes []byte, elementsString string, err error) {
-	mapLen := 16
-
+	mapLen := 16 //becasue each hex character is 4 bits, not a whole byte, so we get twice the characters
 	if len(rest) < mapLen {
-		err = errors.New("Invalid bitmap length")
+		err = fmt.Errorf("Bitmap length of %d is greater than the data length of %d", mapLen, len(rest))
 		return
 	}
-	tempMap := rest[:mapLen]
 
-	// only 64 bit primary bitmap
-	if bytes, err = hex.DecodeString(tempMap); err != nil {
+	//only 64 bit primary bitmap
+	if bytes, err = hex.DecodeString(rest[:mapLen]); err != nil {
 		err = fmt.Errorf("Error Decoding string: %v", err)
 		return
 	}
 
 	if GetBit(bytes, 0) {
 		mapLen = 32
+		if len(rest) < mapLen {
+			err = fmt.Errorf("Bitmap length of %d is greater than the data length of %d", mapLen, len(rest))
+			return
+		}
+
 		// secondary bitmap exists, so total 128 bits
-		if bytes, err = hex.DecodeString(tempMap[:mapLen]); err != nil {
+		if bytes, err = hex.DecodeString(rest[:mapLen]); err != nil {
 			err = fmt.Errorf("Error Decoding string: %v", err)
 			return
 		}
 	}
+	fmt.Printf("Bitmap length: %d, Bitmap: %08b, Data: %s\n", BitMapLen(bytes), bytes, hex.EncodeToString(bytes))
 
 	elementsString = rest[mapLen:]
-
+	fmt.Printf("Bitmap length: %d\n", BitMapLen(bytes))
 	return bytes, elementsString, nil
 }
 
@@ -206,16 +340,16 @@ func extractFieldFromElements(fieldID, str string) (result Field, rest string, e
 
 	fieldLength := fieldDescription.MaxLen
 	if fieldDescription.LenType == "fixed" && fieldDescription.MaxLen > len(str) {
-		err = fmt.Errorf("Fixed length Field %d is longer than data string", field)
+		err = fmt.Errorf("Fixed length Field %d of %d is longer than data string %s", field, fieldDescription.MaxLen, str)
 		return
 	}
 
 	result.ID = fieldID
-	//fmt.Printf("Index: %d, Description: %v, Data: %s\n", field, fieldDescription, str)
+	fmt.Printf("Index: %d, Description: %v, Data: %s\n", field, fieldDescription, str)
 	if fieldDescription.LenType == "fixed" {
 		result.Value = str[:fieldLength]
 		rest = strings.TrimPrefix(str, result.Value)
-		//fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, extractedField, str)
+		fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, result.Value, str)
 	} else {
 		// varianle length fields have their lengths embedded into the string
 		digitCount, err2 := getVariableLengthFromString(fieldDescription.LenType)
@@ -224,20 +358,25 @@ func extractFieldFromElements(fieldID, str string) (result Field, rest string, e
 			return
 		}
 
-		fieldLength, err = strconv.Atoi(str[0:digitCount])
+		fieldLengthStr := str[0:digitCount]
+		fmt.Println("Digits: " + fieldLengthStr)
+
+		fieldLength, err = strconv.Atoi(fieldLengthStr)
 		if err != nil {
 			err = fmt.Errorf("spec error: field %d: %s", field, "invalid length digits")
 			return
 		}
 
-		if fieldLength > len(str) {
-			err = fmt.Errorf("Field %d's length is longer than data string", field)
+		rest = strings.TrimPrefix(str, fieldLengthStr)
+
+		if fieldLength > len(rest) {
+			err = fmt.Errorf("Field %d's length of %d is longer than data string %s", field, fieldLength, rest)
 			return
 		}
 
-		result.Value = str[:fieldLength]
-		rest = strings.TrimPrefix(str, result.Value)
-		//fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, extractedField, str)
+		result.Value = rest[:fieldLength]
+		rest = strings.TrimPrefix(rest, result.Value)
+		fmt.Printf("Index: %d, Description: %v, Extracted: %s, Data: %s\n", field, fieldDescription, result.Value, rest)
 	}
 
 	if err = result.Validate(); err != nil {

@@ -10,6 +10,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/shopspring/decimal"
+
 	validation "github.com/go-ozzo/ozzo-validation"
 	"github.com/go-ozzo/ozzo-validation/is"
 	yaml "gopkg.in/yaml.v2"
@@ -45,6 +47,34 @@ func (iso Message) Bitmap() []byte {
 
 func (iso Message) Data() map[int]Field {
 	return iso.data
+}
+
+func (message Message) Error(code string) (response string, err error) {
+
+	if response, err = message.ToString(); err != nil {
+		return
+	}
+
+	date := time.Now()
+	dateTime := fmt.Sprintf("%04d%02d%02d%02d%02d%02d", date.Year(), date.Month(), date.Day(), date.Hour(), date.Minute(), date.Second())
+
+	if err = message.AddMTI(fmt.Sprintf("%s644", string(message.Mti()[0]))); err != nil {
+		return
+	}
+
+	if err = message.AddField(39, code); err != nil {
+		return
+	}
+
+	if err = message.AddField(12, dateTime); err != nil {
+		return
+	}
+
+	if response, err = message.ToString(); err != nil {
+		return
+	}
+
+	return response, nil
 }
 
 //returns a field description for a field
@@ -189,6 +219,59 @@ func (iso *Message) GetField(index int) (field Field, err error) {
 	}
 
 	return field, nil
+}
+
+func (iso *Message) GetTransactionAmount(index int) (amount float64, currencyCode string, err error) {
+	if index != BIT87_TRANSACTION_AMOUNT && index != BIT87_ORIGINAL_AMOUNT {
+		err = errors.New("Can only get transaction amounts from fields 4 and 30")
+		return
+	}
+
+	field, err := iso.GetField(index)
+	if err != nil {
+		return
+	}
+
+	var tempAmount decimal.Decimal
+
+	switch iso.spec.version {
+	case "1987", "1993":
+		currency, err2 := iso.GetField(BIT87_TXN_CURRENCY_CODE)
+		if err = err2; err != nil {
+			return
+		}
+		currencyCode = currency.Value
+		tempAmount, err = decimal.NewFromString(field.Value)
+		if err != nil {
+			return
+		}
+	case "2003":
+		if len(field.Value) != 16 {
+			err = errors.New("Invalid amount")
+			return
+		}
+		currencyCode = field.Value[:3]
+		tempAmount, err = decimal.NewFromString(field.Value[4:16])
+		if err != nil {
+			return
+		}
+	}
+
+	decimals, ok := Currencies[currencyCode]
+	if !ok {
+		err = errors.New("Invalid or unsupported currency")
+		return
+	}
+
+	decimalUnits := decimal.NewFromFloat(float64(decimals.Decimals))
+	if decimalUnits.LessThanOrEqual(decimal.NewFromFloat(0.0)) {
+		err = errors.New("Invalid decimal units")
+		return
+	}
+
+	currencyCode = strings.ToLower(decimals.Code)
+	amount, _ = tempAmount.Div(decimalUnits).Float64()
+	return
 }
 
 //This gets very complex, so won't validate now, but framework is prepared
@@ -408,4 +491,5 @@ func ClearBit(m []byte, i int) {
 // It will always be a multipile of 8 bits.
 func BitMapLen(m []byte) int {
 	return len(m) * 8
+	//return len(m) * 8 * 2 //Because the map was converted from hex, we have 2 characters per byte
 }

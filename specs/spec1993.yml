@@ -161,7 +161,7 @@ Fields:
     MaxLen:  99
     ContentType: ans
   32:
-    Label: " Acquirer Inst Id Code"
+    Label: "Acquirer Inst Id Code"
     LenType: llvar
     ContentType: "n"
     MaxLen:  11
@@ -197,7 +197,7 @@ Fields:
     MaxLen:  6
   39:
     Label: Action Code
-    MaxLen:  2
+    MaxLen:  3
     ContentType: "n"
     LenType: fixed
   40:
@@ -223,7 +223,7 @@ Fields:
   44:
     ContentType: ans
     MaxLen:  99
-    Label: dditional Response Data
+    Label: Additional Response Data
     LenType: llvar
   45:
     Label: Track 1 Data
